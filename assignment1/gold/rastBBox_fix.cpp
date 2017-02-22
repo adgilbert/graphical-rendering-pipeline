@@ -202,10 +202,6 @@ ll_y = ( ll_y >> ( r_shift - ss_w_lg2 )) << ( r_shift - ss_w_lg2 );
 
 
 
- cout << 'ur_x' << ur_x << endl;
- cout << 'ur_y' << ur_y << endl;
- cout << 'll_x' << ll_x << endl;
- cout << 'll_y' << ll_y << endl;
 }
 
 
