@@ -156,24 +156,56 @@ void rastBBox_bbox_fix( u_Poly< long , ushort >& poly ,
   ll_x = 0 ;
   ll_y = 0 ;
 
-  /////
-  ///// Bounding Box Function Goes Here
-  ///// 
+  long test_x;
+  long test_y;
+  int i = 0;
+
+ for(i = 0 ; i < poly.vertices ; i ++ ) {
+  // Loop through vertices
+  test_x = poly.v[i].x[0];
+  test_y = poly.v[i].x[1];
+  if (i == 0) {
+    ur_x = test_x;
+    ll_x = test_x;
+    ur_y = test_y;
+    ll_y = test_y;
+  }
+  else{
+  if (test_x < ll_x) ll_x = test_x;
+  else if (test_x > ur_x) ur_x = test_x;
   
-  ///// PLACE YOUR CODE HERE
+  if (test_y < ll_y) ll_y = test_y;
+  else if (test_y > ur_y) ur_y = test_y;
+  }
+ }
+ // perform rounding - shift box to subsample grid.
+ur_x = ( ur_x >> ( r_shift - ss_w_lg2 )) << ( r_shift - ss_w_lg2 ); 
+ur_y = ( ur_y >> ( r_shift - ss_w_lg2 )) << ( r_shift - ss_w_lg2 ); 
+ll_x = ( ll_x >> ( r_shift - ss_w_lg2 )) << ( r_shift - ss_w_lg2 ); 
+ll_y = ( ll_y >> ( r_shift - ss_w_lg2 )) << ( r_shift - ss_w_lg2 ); 
+ 
+ // check if bbox is valid (box is not all off of screen) - set valid
+ if ((ll_x < screen_w) && (ll_y < screen_h) && (ur_x > 0) && (ur_y > 0)) {
+  valid = 1;
+ }
+ // Check if pixels are greater or less than the screen size.
+  // if they are then set to screen size
+ if (valid)
+ {
+  if (ll_x < 0) ll_x = 0;
+  if (ur_x > screen_w) ur_x = screen_w;
+  if (ll_y < 0) ll_y = 0;
+  if (ur_y > screen_h) ur_y = screen_h; 
+ }
 
 
-  
-  
-  
-  
-  
-
-  /////
-  ///// Bounding Box Function Goes Here
-  ///// 
 
 
+
+ cout << 'ur_x' << ur_x << endl;
+ cout << 'ur_y' << ur_y << endl;
+ cout << 'll_x' << ll_x << endl;
+ cout << 'll_y' << ll_y << endl;
 }
 
 
