@@ -207,7 +207,7 @@ ll_y = ( ll_y >> ( r_shift - ss_w_lg2 )) << ( r_shift - ss_w_lg2 );
 
 
 int rastBBox_stest_fix( u_Poly< long , ushort >& poly, 
-			long s_x , long s_y )
+      long s_x , long s_y )
 { 
   // This function determines whether the sample coordinates s_x and s_y 
   //  lie inside the micropolygon poly. Note that u_poly is specified in
@@ -222,7 +222,7 @@ int rastBBox_stest_fix( u_Poly< long , ushort >& poly,
   /                                defined by poly
   /  Inputs:
   /     u_Poly< long , ushort >& poly - A micropolygon.  Definition in helper.h
-  /	long s_x - The fixed point value for the sample's x coordinate
+  / long s_x - The fixed point value for the sample's x coordinate
   /     long s_y - The fixed point value for the sample's y coordinate
   /
   /  Output:  
@@ -233,33 +233,53 @@ int rastBBox_stest_fix( u_Poly< long , ushort >& poly,
   /
   */
 
+//Shift Vertices such that sample is origin
+  int n = poly.vertices;
+  long x_vertices [n];
+  long y_vertices [n];
+  long distances [n];
+
+for (int i = 0; i < n; i++) {
+  x_vertices[i] = poly.v[i].x[0] - s_x;
+  y_vertices[i] = poly.v[i].x[1] - s_y;
+}
+
+for (int i = 0; i < n; i++) {
+
+  distances[i] = x_vertices[i] * y_vertices[(i+1)%n] - x_vertices[(i+1)%n] * y_vertices[i];
+  // mod function to make indexing loop around to first vertex
+}
+
+int result = 0 ; // Default to miss state
+int count_right = 0;
+
+if (distances[0] <= 0.0) {
+  count_right += 1;
+}
+
+if (distances[1] < 0.0) {
+  count_right += 1;
+}
 
 
-  int result = 0 ; // Default to miss state
+if (distances[2] <= 0.0) {
+  count_right += 1;
+}
 
-  /////
-  ///// Sample Test Function Goes Here
-  /////
 
-  ///// PLACE YOUR CODE HERE
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+if (n == 4) {
+if (distances[3] <= 0.0) {
+  count_right += 1;
+}
+}
 
-  /////
-  ///// Sample Test Function Goes Here
-  /////
+if (count_right == n) {
+  result = 1;
+}
+//Triangle Min Terms with no culling
+//triRes = ( b0 && b1 && b2 ) || ( !b0 && !b1 && !b2 ) ;
+//Triangle Min Terms with backface culling
 
-  
   return (result-1); //Return 0 if hit, otherwise return -1
 }
 
