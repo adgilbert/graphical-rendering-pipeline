@@ -176,10 +176,14 @@ module  `mname()`
    always_comb begin
    count = 0;
   //; for( my $i = 0 ; $i < $verts ; $i++ ) {
-    count = count + dist_lg_R16S[`$i`] > 0 ? 1 : 0;
+  //; if($i == 1) {
+    count = count + dist_lg_R16S[`$i`] < 0 ? 1 : 0;
+  //; } else {
+    count = count + dist_lg_R16S[`$i`] <= 0 ? 1 : 0;
+  //;  }
   //; }
 
-     if ( count == '$verts')
+     if (count == '$verts')
         hit_valid_R16H = 1;
         else
         hit_valid_R16H = 0;
