@@ -145,26 +145,26 @@
 module `mname()`
   (
    //Input Signals
-   input logic signed [`$sig_fig`-1:0] 	poly_R10S[`$verts`-1:0][`$axis`-1:0] , // Sets X,Y Fixed Point Values
-   input logic 				unsigned [`$sig_fig`-1:0] color_R10U[`$colors`-1:0] , // Color of Poly
-   input logic 				isQuad_R10H , // Is Poly Quad?
-   input logic 				validPoly_R10H , // Valid Data for Operation
+   input logic signed [`$sig_fig`-1:0]    poly_R10S[`$verts`-1:0][`$axis`-1:0] , // Sets X,Y Fixed Point Values
+   input logic             unsigned [`$sig_fig`-1:0] color_R10U[`$colors`-1:0] , // Color of Poly
+   input logic             isQuad_R10H , // Is Poly Quad?
+   input logic             validPoly_R10H , // Valid Data for Operation
 
    //Control Signals
-   input logic 				halt_RnnnnL , // Indicates No Work Should Be Done
-   input logic signed [`$sig_fig`-1:0] 	screen_RnnnnS[1:0] , // Screen Dimensions
-   input logic [3:0] 			subSample_RnnnnU , // SubSample_Interval
+   input logic             halt_RnnnnL , // Indicates No Work Should Be Done
+   input logic signed [`$sig_fig`-1:0]    screen_RnnnnS[1:0] , // Screen Dimensions
+   input logic [3:0]          subSample_RnnnnU , // SubSample_Interval
 
    //Global Signals
-   input logic 				clk, // Clock 
-   input logic 				rst, // Reset
+   input logic             clk, // Clock 
+   input logic             rst, // Reset
 
    //Outout Signals
    output logic signed [`$sig_fig`-1:0] poly_R13S[`$verts`-1:0][`$axis`-1:0], // 4 Sets X,Y Fixed Point Values
-   output logic 			unsigned [`$sig_fig`-1:0] color_R13U[`$colors`-1:0] , // Color of Poly
-   output logic 			isQuad_R13H, // Is Poly Quad?
+   output logic         unsigned [`$sig_fig`-1:0] color_R13U[`$colors`-1:0] , // Color of Poly
+   output logic         isQuad_R13H, // Is Poly Quad?
    output logic signed [`$sig_fig`-1:0] box_R13S[1:0][1:0], // 2 Sets X,Y Fixed Point Values  
-   output logic 			validPoly_R13H                  // Valid Data for Operation
+   output logic         validPoly_R13H                  // Valid Data for Operation
    );
    
    
@@ -176,13 +176,13 @@ module `mname()`
    // box_R10S[0][0]: LL X
    // box_R10S[1][0]: UR X
    // box_R10S[1][1]: UR Y
-   logic signed [`$sig_fig`-1:0] 	box_R10S[1:0][1:0];
+   logic signed [`$sig_fig`-1:0]    box_R10S[1:0][1:0];
    // Step 2 Result: LL and UR Rounded Down to SubSample Interval
-   logic signed [`$sig_fig`-1:0] 	rounded_box_R10S[1:0][1:0];
+   logic signed [`$sig_fig`-1:0]    rounded_box_R10S[1:0][1:0];
    // Step 3 Result: LL and UR X, Y Fixed Point Values after Clipping
-   logic signed [`$sig_fig`-1:0] 	out_box_R10S[1:0][1:0];      // bounds for output
+   logic signed [`$sig_fig`-1:0]    out_box_R10S[1:0][1:0];      // bounds for output
    // Step 3 Result: valid if validPoly_R10H && BBox within screen
-   logic 				outvalid_R10H;               // output is valid
+   logic             outvalid_R10H;               // output is valid
    
    //////// DECLARE OTHER SIGNALS YOU NEED
 
@@ -191,11 +191,12 @@ module `mname()`
    logic [2:0] y_comp_R10S;
    
    // output for retiming registers
-   logic signed [`$sig_fig`-1:0] 	poly_R13S_retime[`$verts`-1:0][`$axis`-1:0]; // 4 Sets X,Y Fixed Point Values
-   logic 				unsigned [`$sig_fig`-1:0] color_R13U_retime[`$colors`-1:0];        // Color of Poly
-   logic signed [`$sig_fig`-1:0] 	box_R13S_retime[1:0][1:0];             // 2 Sets X,Y Fixed Point Values  
-   logic 				isQuad_R13H_retime;                   // Is Poly Quad?
-   logic 				validPoly_R13H_retime ;                 // Valid Data for Operation
+   logic signed [`$sig_fig`-1:0]    poly_R13S_retime[`$verts`-1:0][`$axis`-1:0]; // 4 Sets X,Y Fixed Point Values
+   logic unsigned [`$sig_fig`-1:0] color_R13U_retime[`$colors`-1:0];        // Color of Poly
+   logic signed [`$sig_fig`-1:0]    box_R13S_retime[1:0][1:0];             // 2 Sets X,Y Fixed Point Values  
+   logic             isQuad_R13H_retime;                   // Is Poly Quad?
+   logic             validPoly_R13H_retime ;                 // Valid Data for Operation
+   logic unsigned [`$sig_fig`-1:0] mask; // mask for rounding bbox
 
    // output for retiming registers
 
@@ -284,24 +285,31 @@ module `mname()`
    // Note: Cleverly converting the MSAA signal
    //       to a mask would allow you to do this operation
    //       as a bitwise and operation.
+   case (subSample_RnnnnU)
+      4'b1000: mask = {(`$sig_fig`-`$radix`)'b1, (`$radix`)'b0}:
+      4'b0100: mask = {(`$sig_fig`-`$radix`)'b1, 1'b1, (`$radix`-1)'b0}:
+      4'b0010: mask = {(`$sig_fig`-`$radix`)'b1, 2'b11, (`$radix`-2)'b0}:
+      4'b0001: mask = {(`$sig_fig`-`$radix`)'b1, 3'b111, (`$radix`-3)'b0}:
+      default: mask = {(`$sig_fig`-`$radix`)'b1, (`$radix`)'b0}:
+   endcase
 
    
    //Round LowerLeft and UpperRight for X and Y
    //; for( my $i = 0 ; $i < 2 ; $i++ ) {
-   //; 	for( my $j = 0 ; $j < 2 ; $j++ ) {
+   //;   for( my $j = 0 ; $j < 2 ; $j++ ) {
    always_comb begin
       
       //Integer Portion of LL and UR Remains the Same 
       rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`] 
-     = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`];
+     = box_R10S[`$i`][`$j`][`$sig_fig`-1:0] & mask;
 
-      rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = 0; 
+      // rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = 0; 
 
       
    end // always_comb
 
 
-   //;		}
+   //;      }
    //; }
 
    // ***************** End of Step 2 *********************
@@ -334,6 +342,7 @@ module `mname()`
           rounded_box_R10S[1][1] > 0) 
          outvalid_R10H = 1;
       else outvalid_R10H = 0;
+
    end
 
    // ***************** End of Step 3 *********************
@@ -348,9 +357,9 @@ module `mname()`
    //;                        PipelineDepth=>$pipe_depth-1,
    //;                        Retime=>'YES' );
    `$d_bbx_r1->instantiate()` (
-			       .in(poly_R10S) , 
-			       .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			       .out(poly_R13S_retime));
+                .in(poly_R10S) , 
+                .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+                .out(poly_R13S_retime));
    
    //; my $d_bbx_r2 = generate( 'dff2', "d_bbx_r2", 
    //;                        BitWidth=>$sig_fig,
@@ -358,9 +367,9 @@ module `mname()`
    //;                        PipelineDepth=>$pipe_depth-1,
    //;                        Retime=>'YES' );
    `$d_bbx_r2->instantiate()`(
-			      .in(color_R10U) , 
-			      .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			      .out(color_R13U_retime));
+               .in(color_R10U) , 
+               .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+               .out(color_R13U_retime));
    
    //; my $d_bbx_r3 = generate( 'dff3', "d_bbx_r3", 
    //;                        BitWidth=>$sig_fig,
@@ -369,18 +378,18 @@ module `mname()`
    //;                        PipelineDepth=>$pipe_depth-1,
    //;                        Retime=>'YES' );
    `$d_bbx_r3->instantiate()` (
-			       .in(out_box_R10S) , 
-			       .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			       .out(box_R13S_retime));
+                .in(out_box_R10S) , 
+                .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+                .out(box_R13S_retime));
    
    //; my $d_bbx_r4 = generate( 'dff', "d_bbx_r4", 
    //;                        BitWidth=>2,
    //;                        PipelineDepth=>$pipe_depth-1,
    //;                        Retime=>'YES' );
    `$d_bbx_r4->instantiate()`(
-			      .in({isQuad_R10H, outvalid_R10H}) , 
-			      .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			      .out({isQuad_R13H_retime, validPoly_R13H_retime}));
+               .in({isQuad_R10H, outvalid_R10H}) , 
+               .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+               .out({isQuad_R13H_retime, validPoly_R13H_retime}));
    //Flop Clamped Box to R13_retime with retiming registers
    
    
@@ -393,9 +402,9 @@ module `mname()`
    //;                        PipelineDepth=>1,
    //;                        Retime=>'NO' );
    `$d_bbx_f1->instantiate()` (
-			       .in(poly_R13S_retime) , 
-			       .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			       .out(poly_R13S));
+                .in(poly_R13S_retime) , 
+                .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+                .out(poly_R13S));
    
    //; my $d_bbx_f2 = generate( 'dff2', "d_bbx_f2", 
    //;                        BitWidth=>$sig_fig,
@@ -403,9 +412,9 @@ module `mname()`
    //;                        PipelineDepth=>1,
    //;                        Retime=>'NO' );
    `$d_bbx_f2->instantiate()`(
-			      .in(color_R13U_retime) , 
-			      .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			      .out(color_R13U));
+               .in(color_R13U_retime) , 
+               .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+               .out(color_R13U));
    
    //; my $d_bbx_f3 = generate( 'dff3', "d_bbx_f3", 
    //;                        BitWidth=>$sig_fig,
@@ -414,18 +423,18 @@ module `mname()`
    //;                        PipelineDepth=>1,
    //;                        Retime=>'NO' );
    `$d_bbx_f3->instantiate()` (
-			       .in(box_R13S_retime) , 
-			       .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			       .out(box_R13S));
+                .in(box_R13S_retime) , 
+                .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+                .out(box_R13S));
    
    //; my $d_bbx_f4 = generate( 'dff', "d_bbx_f4", 
    //;                        BitWidth=>2,
    //;                        PipelineDepth=>1,
    //;                        Retime=>'NO' );
    `$d_bbx_f4->instantiate()`(
-			      .in({isQuad_R13H_retime, validPoly_R13H_retime}) , 
-			      .clk(clk) , .reset(rst), .en(halt_RnnnnL),
-			      .out({isQuad_R13H, validPoly_R13H}));
+               .in({isQuad_R13H_retime, validPoly_R13H_retime}) , 
+               .clk(clk) , .reset(rst), .en(halt_RnnnnL),
+               .out({isQuad_R13H, validPoly_R13H}));
    //Flop R13_retime to R13 with fixed registers
 
 
@@ -447,7 +456,6 @@ module `mname()`
 
    
 endmodule 
-
 
 
 

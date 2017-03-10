@@ -206,6 +206,8 @@ module `mname()`
    //////
    //////  RTL code for original FSM Goes Here
    //////
+
+   
    
    // To build this FSM we want to have two more state: one is the working
    // status of this FSM, and the other is the current bounding box where
@@ -253,6 +255,14 @@ module `mname()`
    //////
    ////// First calculate the values of the helper signals using CURRENT STATES
    //////
+
+   // box_R10S[0][0]: LL X
+   // box_R10S[1][0]: UR X
+   // box_R10S[1][1]: UR Y
+
+   assign next_up_samp_R14S[0] = box_R13S[0[0]; // X is just the coordinate of our box
+   assign next_up_samp_R14S[1] = next_up
+   assign
 
    // check the comments 'A Note on Signal Names' 
    // at the begining of the module for the help on
