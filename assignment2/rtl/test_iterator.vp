@@ -206,16 +206,16 @@ module `mname()`
    //////
    //////  RTL code for original FSM Goes Here
    //////
-   always_comb begin
-      poly_R14S = next_poly_R14S;
-      color_R14U = next_color_R14U;
-      sample_R14S = next_sample_R14S;
-      isQuad_R14H = next_isQuad_R14H;
-      validSamp_R14H = next_validSamp_R14H;
-      halt_RnnnnL = next_halt_RnnnnL;
+   // always_comb begin
+   //    poly_R14S = next_poly_R14S;
+   //    color_R14U = next_color_R14U;
+   //    sample_R14S = next_sample_R14S;
+   //    isQuad_R14H = next_isQuad_R14H;
+   //    validSamp_R14H = next_validSamp_R14H;
+   //    halt_RnnnnL = next_halt_RnnnnL;
 
 
-   end
+   // end
 
    
    
