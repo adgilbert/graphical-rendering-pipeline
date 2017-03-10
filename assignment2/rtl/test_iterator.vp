@@ -304,7 +304,7 @@ module `mname()`
    always_comb begin
       unique case( state_R14H )
         ( WAIT_STATE ): begin
-	   next_sample_R14S    =  vox_R10S[0];
+	   next_sample_R14S    =  box_R13S[0];
 	   next_validSamp_R14H =  1'b0;
 	   next_isQuad_R14H    =  isQuad_R13H;
 	   next_state_R14H     =  (validPoly_R13H) ? (TEST_STATE) : (WAIT_STATE);
