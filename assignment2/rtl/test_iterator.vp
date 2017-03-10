@@ -213,7 +213,6 @@ module `mname()`
       isQuad_R14H = next_isQuad_R14H;
       validSamp_R14H = next_validSamp_R14H;
       halt_RnnnnL = next_halt_RnnnnL;
-      state_R14H = next_state_R14H;
 
 
    end
