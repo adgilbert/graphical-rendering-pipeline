@@ -285,16 +285,6 @@ module `mname()`
    // Note: Cleverly converting the MSAA signal
    //       to a mask would allow you to do this operation
    //       as a bitwise and operation.
-   // always_comb begin
-   // mask = (`$sig_fig)'hFFF
-   // case (subSample_RnnnnU)
-   //    4'b1000: mask = {(`$sig_fig`-`$radix`)'b1, (`$radix`)'b0}:
-   //    4'b0100: mask = {(`$sig_fig`-`$radix`)'b1, 1'b1, (`$radix`-1)'b0}:
-   //    4'b0010: mask = {(`$sig_fig`-`$radix`)'b1, 2'b11, (`$radix`-2)'b0}:
-   //    4'b0001: mask = {(`$sig_fig`-`$radix`)'b1, 3'b111, (`$radix`-3)'b0}:
-   //    default: mask = {(`$sig_fig`-`$radix`)'b1, (`$radix`)'b0}:
-   // endcase
-   // end
 
    
    //Round LowerLeft and UpperRight for X and Y
@@ -324,6 +314,7 @@ module `mname()`
         rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`];
         rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = 0;
       end
+    endcase
    end // always_comb
 
 
