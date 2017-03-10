@@ -126,7 +126,7 @@ module  `mname()`
    //////// DECLARE OTHER INTERMEDIATE SIGNALS YOU NEED
 
 
-   //; if( $verts == 3 ) {
+   //; if( `$verts` == 3 ) {
 
    //////// BEGIN YOUR IMPLEMENTATION
 
@@ -166,7 +166,6 @@ module  `mname()`
    always_comb begin
      // assign dist_lg_R16S
      dist_lg_R16S[`$i`] = edge_R16S[`$i`][`$x`][0]*edge_R16S[`$i`][`$y`][1] - edge_R16S[`$i`][`$x`][1]*edge_R16S[`$i`][`$y`][0];
-     edge
    end   
    //;  }
    //; }

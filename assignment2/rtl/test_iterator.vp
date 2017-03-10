@@ -271,7 +271,7 @@ module `mname()`
    // box_R10S[1][0]: UR X
    // box_R10S[1][1]: UR Y
 
-   assign next_up_samp_R14S[0] = box_R13S[0[0]; // X is just the coordinate of our box
+   assign next_up_samp_R14S[0] = box_R13S[0][0]; // X is just the coordinate of our box
    assign next_up_samp_R14S[1] = sample_R14S[1] + 1;
    assign next_rt_samp_R14S[0] = sample_R14S[0] + 1;
    assign next_rt_samp_R14S[1] = sample_R14S[1]; // same y coordinate
@@ -304,8 +304,8 @@ module `mname()`
    always_comb begin
       unique case( state_R14H )
         ( WAIT_STATE ): begin
-	   next_sample_R14S    =  (`$sig_fig`)'b0;
-	   next_validSamp_R14H =  1'b0;
+	   next_sample_R14S    =  0;
+	   next_validSamp_R14H =  0;
 	   next_isQuad_R14H    =  isQuad_R13H;
 	   next_state_R14H     =  (validPoly_R13H) ? (TEST_STATE) : (WAIT_STATE);
 	   next_poly_R14S      =  poly_R13S;
