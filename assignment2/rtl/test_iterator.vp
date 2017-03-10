@@ -261,7 +261,7 @@ module `mname()`
    logic 				at_right_edg_R14H;      //Current sample at right edge of bbox?
    logic 				at_top_edg_R14H;        //Current sample at top edge of bbox?
    logic 				at_end_box_R14H;        //Current sample at end of bbox?
-   logic             location[2:0]; // concatenate the signals to make a case statement
+   //logic             location[2:0]; // concatenate the signals to make a case statement
 
    //////
    ////// First calculate the values of the helper signals using CURRENT STATES
@@ -278,7 +278,7 @@ module `mname()`
    assign at_right_edg_R14H = (sample_R14S[0]==box_R13S[1][0]);
    assign at_top_edg_R14H = (sample_R14S[1] == box_R13S[1][1]);
    assign at_end_box_R14H = (at_right_edg_R14H && at_top_edg_R14H); // are we at the top right?
-   assign location = {at_right_edg_R14H, at_top_edg_R14H, at_end_box_R14H};
+//   assign location = {at_right_edg_R14H, at_top_edg_R14H, at_end_box_R14H};
 
    // check the comments 'A Note on Signal Names' 
    // at the begining of the module for the help on
@@ -304,8 +304,8 @@ module `mname()`
    always_comb begin
       unique case( state_R14H )
         ( WAIT_STATE ): begin
-	   next_sample_R14S    =  0;
-	   next_validSamp_R14H =  0;
+	   next_sample_R14S    =  next_sample_R14S;
+	   next_validSamp_R14H =  1'b0;
 	   next_isQuad_R14H    =  isQuad_R13H;
 	   next_state_R14H     =  (validPoly_R13H) ? (TEST_STATE) : (WAIT_STATE);
 	   next_poly_R14S      =  poly_R13S;
