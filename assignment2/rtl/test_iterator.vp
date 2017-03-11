@@ -141,7 +141,7 @@ module `mname()`
    );
    
    
-   // This module implement a Moore machine to iterate sample points in bbox
+   // This module implement a Moore machine to iterarte sample points in bbox
    // Recall: a Moore machine is an FSM whose output values are determined 
    // solely by its current state.
    // A simple way to build a Moore machine is to make states for every output
@@ -155,7 +155,6 @@ module `mname()`
    logic 				next_isQuad_R14H;                   
    logic 				next_validSamp_R14H;                 
    logic 				next_halt_RnnnnL;
-   logic signed [`$sig_fig`-1:0]        increment;
    
    
    // Instantiate registers for storing these states
@@ -207,18 +206,6 @@ module `mname()`
    //////
    //////  RTL code for original FSM Goes Here
    //////
-   // always_comb begin
-   //    poly_R14S = next_poly_R14S;
-   //    color_R14U = next_color_R14U;
-   //    sample_R14S = next_sample_R14S;
-   //    isQuad_R14H = next_isQuad_R14H;
-   //    validSamp_R14H = next_validSamp_R14H;
-   //    halt_RnnnnL = next_halt_RnnnnL;
-
-
-   // end
-
-   
    
    // To build this FSM we want to have two more state: one is the working
    // status of this FSM, and the other is the current bounding box where
@@ -262,28 +249,10 @@ module `mname()`
    logic 				at_right_edg_R14H;      //Current sample at right edge of bbox?
    logic 				at_top_edg_R14H;        //Current sample at top edge of bbox?
    logic 				at_end_box_R14H;        //Current sample at end of bbox?
-   //logic             location[2:0]; // concatenate the signals to make a case statement
 
    //////
    ////// First calculate the values of the helper signals using CURRENT STATES
    //////
-
-   // box_R10S[0][0]: LL X
-   // box_R10S[1][0]: UR X
-   // box_R10S[1][1]: UR Y
-
-   always_comb begin
-   increment = {{(`$sig_fig`-`$radix`-1){1'b0}}, subSample_RnnnnU, {(`$radix`-3){1'b0}}};
-   // increment = 1'b1 << `$radix` - subSample_RnnnU;
-   next_up_samp_R14S[0] = box_R13S[0][0]; // X is just the coordinate of our box
-   next_up_samp_R14S[1] = sample_R14S[1] + increment;
-   next_rt_samp_R14S[0] = sample_R14S[0] + increment;
-   next_rt_samp_R14S[1] = sample_R14S[1]; // same y coordinate
-   at_right_edg_R14H = (next_rt_samp_R14S[0] > box_R13S[1][0]) ? 1: 0;
-   at_top_edg_R14H = (sample_R14S[1]   > box_R13S[1][1]) ? 1 : 0;
-   at_end_box_R14H = (at_right_edg_R14H && at_top_edg_R14H) ? 1 : 0; // are we at the top right?
-   end
-//   assign location = {at_right_edg_R14H, at_top_edg_R14H, at_end_box_R14H};
 
    // check the comments 'A Note on Signal Names' 
    // at the begining of the module for the help on
@@ -291,12 +260,18 @@ module `mname()`
    
    ////// PLACE YOUR CODE HERE
 
- 
-
-
-
-
-
+   logic unsigned [`$sig_fig`-1:0] delta;
+    // we need to put a 1 in the position of the subsample grid. Luckily, the signal is 
+    // provided in a form that makes it easy to do this simply by concatenating it to the right size
+    // and putting the subSample in the right position.
+    assign delta = {{(`$sig_fig`-`$radix`-1){1'b0}}, subSample_RnnnnU, {(`$radix`-3){1'b0}}};
+    assign next_up_samp_R14S[0] = box_R14S[0][0]; // X is just the coordinate of our box
+    assign next_up_samp_R14S[1] = sample_R14S[1] + delta;  // add delta
+    assign next_rt_samp_R14S[0] = sample_R14S[0] + delta;  // add delta
+    assign next_rt_samp_R14S[1] = sample_R14S[1];          // same y coordinate
+    assign at_right_edg_R14H = (next_rt_samp_R14S[0] > box_R14S[1][0]); // at box edge
+    assign at_top_edg_R14H = (next_up_samp_R14S[1] > box_R14S[1][1]); // at top
+    assign at_end_box_R14H = (at_right_edg_R14H && at_top_edg_R14H); // at right and top
 
    
    //////
@@ -306,27 +281,27 @@ module `mname()`
 
    ////// COMPLETE THE FOLLOW ALWAYS_COMB BLOCK
    
-   always_comb begin
+      always_comb begin
       unique case( state_R14H )
         ( WAIT_STATE ): begin
-	   next_sample_R14S    =  box_R13S[0];
-	   next_validSamp_R14H =  validPoly_R13H;
-	   next_isQuad_R14H    =  isQuad_R13H;
-	   next_state_R14H     =  (validPoly_R13H) ? (TEST_STATE) : (WAIT_STATE);
-	   next_poly_R14S      =  poly_R13S;
-	   next_color_R14U     =  color_R13U;
-	   next_box_R14S       =  box_R13S;
-	   next_halt_RnnnnL    =  !validPoly_R13H; // changed
+	   next_sample_R14S    = box_R13S[0]; // start with the lower left edge
+	   next_validSamp_R14H = validPoly_R13H; // if valid input then set valid
+	   next_isQuad_R14H    = isQuad_R13H; 
+	   next_state_R14H     = validPoly_R13H ? TEST_STATE : WAIT_STATE; // if valid input start testing
+	   next_poly_R14S      = poly_R13S;
+	   next_color_R14U     = color_R13U;
+	   next_box_R14S       = box_R13S; // whatever the input is
+	   next_halt_RnnnnL    = (validPoly_R13H) ? 0 : 1; // halt when we get a valid signal
 	end
 	( TEST_STATE ): begin
-	   next_sample_R14S    =  at_right_edg_R14H ? (next_up_samp_R14S) : (next_rt_samp_R14S);
-	   next_validSamp_R14H =  !at_end_box_R14H;  //? (1'b0) : (1'b1); // only valid if not at end of box
-	   next_isQuad_R14H    =  isQuad_R13H;
-	   next_state_R14H     =  at_end_box_R14H ? (WAIT_STATE) : (TEST_STATE);
-	   next_poly_R14S      =  poly_R14S;
-	   next_color_R14U     =  color_R14U;
-	   next_box_R14S       =  box_R14S;
-	   next_halt_RnnnnL    =  at_end_box_R14H;
+	   next_sample_R14S    = at_right_edg_R14H ? next_up_samp_R14S : next_rt_samp_R14S; // move either right or left
+	   next_validSamp_R14H = (at_end_box_R14H) ? 0 : 1; // valid unless we are at the end of the box
+	   next_isQuad_R14H    = isQuad_R14H;
+	   next_state_R14H     = at_end_box_R14H ? WAIT_STATE : TEST_STATE; // back to wait if we reach the end
+	   next_poly_R14S      = poly_R14S;
+	   next_color_R14U     = color_R14U;
+	   next_box_R14S       = box_R14S;
+	   next_halt_RnnnnL    = at_end_box_R14H; //stop halting if we reach the end
 	end      
       endcase // case ( state_R14H )
       

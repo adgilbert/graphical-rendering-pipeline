@@ -77,7 +77,6 @@
 //; my $y = 1;
 
 
-
 /* A Note on Signal Names:
  *
  * Most signals have a suffix of the form _RxxxxN 
@@ -120,13 +119,12 @@ module  `mname()`
    logic signed [2*`$shortSF`-1:0] 	 dist_lg_R16S[`$edges`-1:0]; // Result of x_1 * y_2 - x_2 * y_1
    logic 				 hit_valid_R16H ; // Output (YOUR JOB!)
    logic signed [`$sig_fig`-1:0] 	 hit_R16S[`$axis`-1:0]; // Sample position
-   logic signed [`$sig_fig`-1:0]   count = 0;
    // Signals in Access Order 
 
    //////// DECLARE OTHER INTERMEDIATE SIGNALS YOU NEED
 
 
-   //; if( `$verts` == 3 ) {
+   //; if( $verts == 3 ) {
 
     //////// BEGIN YOUR IMPLEMENTATION
 
@@ -143,33 +141,29 @@ module  `mname()`
    end
    //;  }
    //; }
-
+ //ddjflkds
    //// (2) Organize edges (form three edges for triangles)
 
+
+   //; for( my $i = 0 ; $i < $verts ; $i++ ) {
+  //;  for( my $j = 0 ; $j < 2 ; $j++ ) {
    always_comb begin
-     // assign edge_R16S
-     edge_R16S[0][0][0] = poly_shift_R16S[0][0];
-     edge_R16S[0][0][1] = poly_shift_R16S[0][1];
-     edge_R16S[0][1][0] = poly_shift_R16S[1][0];
-     edge_R16S[0][1][1] = poly_shift_R16S[1][1];
-     edge_R16S[1][0][0] = poly_shift_R16S[1][0];
-     edge_R16S[1][0][1] = poly_shift_R16S[1][1];
-     edge_R16S[1][1][0] = poly_shift_R16S[2][0];
-     edge_R16S[1][1][1] = poly_shift_R16S[2][1];
-     edge_R16S[2][0][0] = poly_shift_R16S[2][0];
-     edge_R16S[2][0][1] = poly_shift_R16S[2][1];
-     edge_R16S[2][1][0] = poly_shift_R16S[0][0];
-     edge_R16S[2][1][1] = poly_shift_R16S[0][1];
+     // assign edge_R16S (I made them so that they are the shifted edges)
+     // edge_R16S[edge#][x || y][x1 || x2] = poly_shift_R16S[vertex#][x || y]
+     edge_R16S[`$i`][`$j`][`$x`] = poly_shift_R16S[(`$j`+`$i`)%3][`$x`];
+     edge_R16S[`$i`][`$j`][`$y`] = poly_shift_R16S[(`$j`+`$i`)%3][`$y`];
    end
+   //;  }
+   //; }
 
    //// (3) Calculate distance x_1 * y_2 - x_2 * y_1
 
+   //; for( my $i = 0 ; $i < $verts ; $i++ ) {
    always_comb begin
      // assign dist_lg_R16S
-     dist_lg_R16S[0] = edge_R16S[0][0][0] * edge_R16S[0][1][1] - edge_R16S[0][1][0] * edge_R16S[0][0][1];
-     dist_lg_R16S[1] = edge_R16S[1][0][0] * edge_R16S[1][1][1] - edge_R16S[1][1][0] * edge_R16S[1][0][1];
-     dist_lg_R16S[2] = edge_R16S[2][0][0] * edge_R16S[2][1][1] - edge_R16S[2][1][0] * edge_R16S[2][0][1];
+     dist_lg_R16S[`$i`] = edge_R16S[`$i`][0][`$x`]*edge_R16S[`$i`][1][`$y`] - edge_R16S[`$i`][1][`$x`]*edge_R16S[`$i`][0][`$y`];
    end   
+   //; }  
 
    //// (4) Check distance and assign hit_valid_R16H.
 
@@ -179,7 +173,6 @@ module  `mname()`
    end   
 
    //////// END YOUR IMPLEMENTATION
-
 
 
    //; } elsif( $edges == 5 ) {
@@ -270,3 +263,6 @@ module  `mname()`
    /* Flop R18_retime to R18 with fixed registers */ 
 
 endmodule
+
+
+
