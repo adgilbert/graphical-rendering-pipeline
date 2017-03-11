@@ -314,6 +314,7 @@ module `mname()`
         rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`];
         rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = 0;
       end
+      $display ("Current value of box = [%g, %g], [%g, %g]", rounded_box_R10S[0][0], rounded_box_R10S[1][0], rounded_box_R10S[0][1], rounded_box_R10S[1][1]);
     endcase
    end // always_comb
 
