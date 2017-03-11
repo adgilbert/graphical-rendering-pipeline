@@ -221,45 +221,28 @@ module `mname()`
 
    always_comb begin
 
-   //Calculate bounding box using gold code as model
+   //////// PLACE YOUR CODE HERE
+   //////// ASSIGN VALUES TO "box_R10S"
+   if(halt_RnnnnL && validPoly_R10H) 
+       begin
+        // assign X, Y values of first vertex to LLX, LLY, URX, URY
+        box_R10S[0][0] = poly_R10S[0][0];
+        box_R10S[0][1] = poly_R10S[0][1];
+        box_R10S[1][0] = poly_R10S[0][0];
+        box_R10S[1][1] = poly_R10S[0][1];
 
-   x_comp_R10S[0] =  poly_R10S[0][0] < poly_R10S[1][0];
-   x_comp_R10S[1] =  poly_R10S[0][0] < poly_R10S[2][0];
-   x_comp_R10S[2] =  poly_R10S[1][0] < poly_R10S[2][0];
+        // check if X, Y values of second vertex should be new bounds of box
+        box_R10S[0][0] = (poly_R10S[1][0] < box_R10S[0][0]) ? poly_R10S[1][0] : box_R10S[0][0];
+        box_R10S[0][1] = (poly_R10S[1][1] < box_R10S[0][1]) ? poly_R10S[1][1] : box_R10S[0][1];
+        box_R10S[1][0] = (poly_R10S[1][0] > box_R10S[1][0]) ? poly_R10S[1][0] : box_R10S[1][0];
+        box_R10S[1][1] = (poly_R10S[1][1] > box_R10S[1][1]) ? poly_R10S[1][1] : box_R10S[1][1];
 
-   y_comp_R10S[0] =  poly_R10S[0][1] < poly_R10S[1][1];
-   y_comp_R10S[1] =  poly_R10S[0][1] < poly_R10S[2][1];
-   y_comp_R10S[2] =  poly_R10S[1][1] < poly_R10S[2][1];
-   // poly_R10S[vert][axis]
-
-   case (x_comp_R10S)
-      3'b11x:  box_R10S[0][0] = poly_R10S[0][0];
-      3'b0x1:  box_R10S[0][0] = poly_R10S[1][0];
-      3'bx00:  box_R10S[0][0] = poly_R10S[2][0];
-      default: box_R10S[0][0] = poly_R10S[0][0]; // should never occur
-   endcase
-
-   case (x_comp_R10S)
-      3'b00x:  box_R10S[1][0] = poly_R10S[0][0];
-      3'b1x0:  box_R10S[1][0] = poly_R10S[1][0];
-      3'bx11:  box_R10S[1][0] = poly_R10S[2][0];
-      default: box_R10S[1][0] = poly_R10S[0][0]; // should never happen
-   endcase
-
-   case (y_comp_R10S)
-      3'b11x:  box_R10S[0][1] = poly_R10S[0][1];
-      3'b0x1:  box_R10S[0][1] = poly_R10S[1][1];
-      3'bx00:  box_R10S[0][1] = poly_R10S[2][1];
-      default: box_R10S[0][1] = poly_R10S[0][1]; // should never occur
-   endcase
-
-   case (y_comp_R10S)
-      3'b00x:  box_R10S[0][1] = poly_R10S[0][1];
-      3'b1x0:  box_R10S[0][1] = poly_R10S[1][1];
-      3'bx11:  box_R10S[0][1] = poly_R10S[2][1];
-      default: box_R10S[0][1] = poly_R10S[0][1]; // should never occur
-   endcase
-
+        // check if X, Y values of third vertex should be new bounds of box
+        box_R10S[0][0] = (poly_R10S[2][0] < box_R10S[0][0]) ? poly_R10S[2][0] : box_R10S[0][0];
+        box_R10S[0][1] = (poly_R10S[2][1] < box_R10S[0][1]) ? poly_R10S[2][1] : box_R10S[0][1];
+        box_R10S[1][0] = (poly_R10S[2][0] > box_R10S[1][0]) ? poly_R10S[2][0] : box_R10S[1][0];
+        box_R10S[1][1] = (poly_R10S[2][1] > box_R10S[1][1]) ? poly_R10S[2][1] : box_R10S[1][1];
+       end
 
    end
 
@@ -289,36 +272,38 @@ module `mname()`
    
    //Round LowerLeft and UpperRight for X and Y
    //; for( my $i = 0 ; $i < 2 ; $i++ ) {
-   //;   for( my $j = 0 ; $j < 2 ; $j++ ) {
+   //; 	for( my $j = 0 ; $j < 2 ; $j++ ) {
    always_comb begin
       
       //Integer Portion of LL and UR Remains the Same 
-      case (subSample_RnnnnU)
-      4'b1000: begin
-        rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`];
-        rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = 0;
-      end
-      4'b0100: begin
-        rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`-1] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`-1];
-        rounded_box_R10S[`$i`][`$j`][`$radix`-2:0] = 0;
-      end
-      4'b0010: begin
-        rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`-2] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`-2];
-        rounded_box_R10S[`$i`][`$j`][`$radix`-3:0] = 0;
-      end
-      4'b0001: begin
-        rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`-3] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`-3];
-        rounded_box_R10S[`$i`][`$j`][`$radix`-4:0] = 0;
-      end
-      default: begin
-        rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`];
-        rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = 0;
-      end
-    endcase
+      rounded_box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`] = box_R10S[`$i`][`$j`][`$sig_fig`-1:`$radix`];
+
+      //////// PLACE YOUR CODE HERE
+      //////// ASSIGN FRACTION PORTION
+      //case(subSample_RnnnnU)
+      //  4'b0100: mask = '{2'b11,   '{(`$radix`-2){1'b0}}};
+      //  4'b0010: mask = '{3'b111,  '{(`$radix`-3){1'b0}}};
+      //  4'b0001: mask = '{4'b1111, '{(`$radix`-4){1'b0}}};
+      //  default: mask = '{1'b1,    '{(`$radix`-1){1'b0}}};
+      //endcase
+
+      //case(subSample_RnnnnU)
+      //  4'b0100: mask = '{1'b1,   '{(`$radix`-1){1'b0}}};
+      //  4'b0010: mask = '{2'b11,  '{(`$radix`-2){1'b0}}};
+      //  4'b0001: mask = '{3'b111, '{(`$radix`-3){1'b0}}};
+      //  default: mask = '{(`$radix`){1'b0}};
+      //endcase
+
+      case(subSample_RnnnnU)
+        4'b0100: rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = {box_R10S[`$i`][`$j`][`$radix`-1], {(`$radix`-1){1'b0}}};
+        4'b0010: rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = {box_R10S[`$i`][`$j`][`$radix`-1:`$radix`-2], {(`$radix`-2){1'b0}}};
+        4'b0001: rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = {box_R10S[`$i`][`$j`][`$radix`-1:`$radix`-3], {(`$radix`-3){1'b0}}};
+        default: rounded_box_R10S[`$i`][`$j`][`$radix`-1:0] = {(`$radix`){1'b0}};
+      endcase
+      
    end // always_comb
 
-
-   //;      }
+   //;		}
    //; }
 
    // ***************** End of Step 2 *********************
@@ -336,27 +321,22 @@ module `mname()`
 
       //////// PLACE YOUR CODE HERE
       //////// ASSIGN "out_box_R10S" and "outvalid_R10H"
-      // box_R10S[0][0]: LL X
-   // box_R10S[1][0]: UR X
-   // box_R10S[1][1]: UR Y
+      
+      out_box_R10S[0][0] = (rounded_box_R10S[0][0] < 0) ? {(`$sig_fig`){1'b0}} : rounded_box_R10S[0][0];
+      out_box_R10S[0][1] = (rounded_box_R10S[0][1] < 0) ? {(`$sig_fig`){1'b0}} : rounded_box_R10S[0][1];
+      out_box_R10S[1][0] = (rounded_box_R10S[1][0] > screen_RnnnnS[0]) ? screen_RnnnnS[0] : rounded_box_R10S[1][0];
+      out_box_R10S[1][1] = (rounded_box_R10S[1][1] > screen_RnnnnS[1]) ? screen_RnnnnS[1] : rounded_box_R10S[1][1];
 
-      if (rounded_box_R10S[0][0] < 0) out_box_R10S[0][0] = 0;
-      if (rounded_box_R10S[0][1] < 0) out_box_R10S[0][1] = 0;
-      if (rounded_box_R10S[1][0] > screen_RnnnnS[0]) out_box_R10S[1][0] = screen_RnnnnS[0];
-      if (rounded_box_R10S[1][1] > screen_RnnnnS[1]) out_box_R10S[1][1] = screen_RnnnnS[1];
-
-      if (out_box_R10S[0][0] < screen_RnnnnS[0] &&
-          out_box_R10S[1][0] > 0 &&
-          out_box_R10S[0][1] < screen_RnnnnS[1] &&
-          out_box_R10S[1][1] > 0) 
-         outvalid_R10H = 1;
-      else outvalid_R10H = 0;
+      outvalid_R10H = 1;
+      outvalid_R10H = (rounded_box_R10S[0][0] < 0) ? 0 : outvalid_R10H;
+      outvalid_R10H = (rounded_box_R10S[0][1] < 0) ? 0 : outvalid_R10H;
+      outvalid_R10H = (rounded_box_R10S[1][0] > screen_RnnnnS[0]) ? 0 : outvalid_R10H;
+      outvalid_R10H = (rounded_box_R10S[1][1] > screen_RnnnnS[1]) ? 0 : outvalid_R10H;
+      outvalid_R10H = outvalid_R10H && validPoly_R10H;
 
    end
 
    // ***************** End of Step 3 *********************
-
-
    
    //Flop Clamped Box to R13_retime with retiming registers
    //; my $d_bbx_r1 = generate( 'dff3', "d_bbx_r1", 
