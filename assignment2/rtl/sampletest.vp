@@ -51,7 +51,7 @@
  * ***************************************************************************/
 //; # module parameters
 //; my $sig_fig    = parameter(Name=>'SigFig',
-//;                            Val=>24, Min=>1, Step=>1, 
+//;                            Val=>20, Min=>1, Step=>1, 
 //;                            Doc=>"Bits in color and position.");
 //; my $radix      = parameter(Name=>'Radix',
 //;                            Val=>10, Min=>1, Step=>1, 
