@@ -143,7 +143,7 @@ module `mname()`
 
    // FOR TEST ITERATOR 2
    output logic signed [`$sig_fig`-1:0] sample2_R14S[1:0], //Sample Location to Be Tested
-   output logic         validSamp2_R14H2                   //Sample and Micropolygon are Valid
+   output logic         validSamp2_R14H                   //Sample and Micropolygon are Valid
 
 
    );
@@ -189,7 +189,7 @@ module `mname()`
 			   .clk(clk) , .reset(rst), .en(1'b1),
 			   .out(color_R14U));
    
-   //; my $d303 = generate( 'dff2', "d303", 
+   //; my $d303 = generate( 'dff2', "d303_1", 
    //;                        BitWidth=>$sig_fig,
    //;                        ArraySize1=>2,
    //;                        PipelineDepth=>1,
@@ -199,7 +199,7 @@ module `mname()`
 			   .clk(clk) , .reset(rst), .en(1'b1),
 			   .out(sample1_R14S));	
 
-   //; my $d303 = generate( 'dff2', "d303", 
+   //; my $d303 = generate( 'dff2', "d303_2", 
    //;                        BitWidth=>$sig_fig,
    //;                        ArraySize1=>2,
    //;                        PipelineDepth=>1,
@@ -298,17 +298,17 @@ module `mname()`
     assign next_up_samp1_R14S[1] = sample1_R14S[1] + delta;  // add delta
     assign next_rt_samp1_R14S[0] = sample1_R14S[0] + delta;  // add delta
     assign next_rt_samp1_R14S[1] = sample1_R14S[1];          // same y coordinate
-    assign at_right_edg1_R14H = (next_rt_samp_R14S[0] > box_R14S[1][0]); // at box edge
-    assign at_top_edg1_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp_R14S[1] >= (box_R14S[1][1] >> 1)+1) : (next_up_samp_R14S[1] >= (box_R14S[1][1] >> 1)); // at top
-    assign at_end_box1_R14H = (at_right_edg_R14H && at_top_edg_R14H); // at right and top
+    assign at_right_edg1_R14H = (next_rt_samp1_R14S[0] > box_R14S[1][0]); // at box edge
+    assign at_top_edg1_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp1_R14S[1] >= (box_R14S[1][1] >> 1)+1) : (next_up_samp1_R14S[1] >= (box_R14S[1][1] >> 1)); // at top
+    assign at_end_box1_R14H = (at_right_edg1_R14H && at_top_edg1_R14H); // at right and top
 
 
     assign next_dn_samp2_R14S[0] = box_R14S[1][0]; // X is just the far coordinate of our box
     assign next_dn_samp2_R14S[1] = sample1_R14S[1] - delta;  // subtract delta
     assign next_lt_samp2_R14S[0] = sample1_R14S[0] - delta;  // subtract delta
     assign next_lt_samp2_R14S[1] = sample1_R14S[1];          // same y coordinate
-    assign at_left_edg2_R14H = (next_rt_samp_R14S[0] < box_R14S[0][0]); // at box edge
-    assign at_bot_edg2_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp_R14S[1] > (box_R14S[1][1] >> 1)+1) : (next_up_samp_R14S[1] > (box_R14S[1][1] >> 1)); // at top
+    assign at_left_edg2_R14H = (next_rt_samp1_R14S[0] < box_R14S[0][0]); // at box edge
+    // assign at_bot_edg2_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp1_R14S[1] > (box_R14S[1][1] >> 1)+1) : (next_up_samp1_R14S[1] > (box_R14S[1][1] >> 1)); // at top
     assign at_bot_edg2_R14H = next_dn_samp2_R14S[1] < (next_box_R14S[1][1] >> 1);
     assign at_end_box2_R14H = (at_left_edg2_R14H && at_bot_edg2_R14H); // at right and top
 

@@ -297,18 +297,17 @@ module `mname()`
                   );
 
    always_comb begin
-   if hit_valid1_R18H begin
+   if (hit_valid1_R18H) begin
       hit_R18S = hit1_R18S;
       color_R18U = color1_R18U;
       hit_valid_R18H = hit_valid1_R18H;
+   end
    else begin
       hit_R18S = hit2_R18S;
       color1_R18U = color2_R18U;
       hit_valid_R18H = hit_valid2_R18H;
-   end
       end
    end
       
-   end
    
 endmodule
