@@ -194,7 +194,7 @@ module `mname()`
 
 
 
-   //; my $hash_jtree = generate( 'hash_jtree', "hash_jtree", 
+   //; my $hash_jtree = generate( 'hash_jtree', "hash_jtree1", 
    //;                        SigFig=>$sig_fig,
    //;                        Radix=>$radix,
    //;                        Vertices=>$verts,
@@ -223,7 +223,7 @@ module `mname()`
 
 
 
-      //; my $hash_jtree = generate( 'hash_jtree', "hash_jtree", 
+      //; my $hash_jtree = generate( 'hash_jtree', "hash_jtree2", 
    //;                        SigFig=>$sig_fig,
    //;                        Radix=>$radix,
    //;                        Vertices=>$verts,
@@ -251,7 +251,7 @@ module `mname()`
                );
    
 
-   //; my $sampletest = generate( 'sampletest', "sampletest", 
+   //; my $sampletest = generate( 'sampletest', "sampletest1", 
    //;                        SigFig=>$sig_fig,
    //;                        Radix=>$radix,
    //;                        Vertices=>$verts,
@@ -274,7 +274,7 @@ module `mname()`
 				      );
 
 
-   //; my $sampletest = generate( 'sampletest', "sampletest", 
+   //; my $sampletest = generate( 'sampletest', "sampletest2", 
    //;                        SigFig=>$sig_fig,
    //;                        Radix=>$radix,
    //;                        Vertices=>$verts,
