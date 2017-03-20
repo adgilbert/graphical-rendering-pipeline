@@ -51,7 +51,7 @@
  * ***************************************************************************/
 //; # module parameters
 //; my $sig_fig    = parameter(Name=>'SigFig',
-//;                            Val=>20, Min=>1, Step=>1, 
+//;                            Val=>24, Min=>1, Step=>1, 
 //;                            Doc=>"Bits in color and position.");
 //; my $radix      = parameter(Name=>'Radix',
 //;                            Val=>10, Min=>1, Step=>1, 
@@ -75,7 +75,8 @@
 //; my $MRound = 2 * $shortSF - $radix;
 //; my $x = 0;
 //; my $y = 1;
-
+//; my $cut_top_bits = 11;
+//; my $cut_bot_bits = 0;
 
 /* A Note on Signal Names:
  *
@@ -115,7 +116,7 @@ module  `mname()`
    
    // Signals in Access Order  
    logic signed [`$sig_fig`-1:0] 	 poly_shift_R16S[`$verts`-1:0][1:0]; // Micropolygon after coordinate shift 
-   logic signed [`$sig_fig`-1:0] 	 edge_R16S[`$edges`-1:0][1:0][1:0]; // Edges 
+   logic signed [`$sig_fig`-`$cut_top_bits`:0] 	 edge_R16S[`$edges`-1:0][1:0][1:0]; // Edges 
    logic signed [2*`$shortSF`-1:0] 	 dist_lg_R16S[`$edges`-1:0]; // Result of x_1 * y_2 - x_2 * y_1
    logic 				 hit_valid_R16H ; // Output (YOUR JOB!)
    logic signed [`$sig_fig`-1:0] 	 hit_R16S[`$axis`-1:0]; // Sample position
@@ -150,8 +151,8 @@ module  `mname()`
    always_comb begin
      // assign edge_R16S (I made them so that they are the shifted edges)
      // edge_R16S[edge#][x || y][x1 || x2] = poly_shift_R16S[vertex#][x || y]
-     edge_R16S[`$i`][`$j`][`$x`] = poly_shift_R16S[(`$j`+`$i`)%3][`$x`];
-     edge_R16S[`$i`][`$j`][`$y`] = poly_shift_R16S[(`$j`+`$i`)%3][`$y`];
+     edge_R16S[`$i`][`$j`][`$x`] = poly_shift_R16S[(`$j`+`$i`)%3][`$x`][`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`];
+     edge_R16S[`$i`][`$j`][`$y`] = poly_shift_R16S[(`$j`+`$i`)%3][`$y`][`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`];
    end
    //;  }
    //; }
@@ -161,7 +162,20 @@ module  `mname()`
    //; for( my $i = 0 ; $i < $verts ; $i++ ) {
    always_comb begin
      // assign dist_lg_R16S
-     dist_lg_R16S[`$i`] = edge_R16S[`$i`][0][`$x`]*edge_R16S[`$i`][1][`$y`] - edge_R16S[`$i`][1][`$x`]*edge_R16S[`$i`][0][`$y`];
+      // dist_lg_R16S[`$i`] = edge_R16S[`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`][`$i`][0][`$x`] * 
+//			   edge_R16S[`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`][`$i`][1][`$y`] - 
+//			   edge_R16S[`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`][`$i`][1][`$x`] * 
+//			   edge_R16S[`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`][`$i`][0][`$y`];
+
+  	dist_lg_R16S[`$i`] = edge_R16S[`$i`][0][`$x`] * 
+			     edge_R16S[`$i`][1][`$y`] - 
+			     edge_R16S[`$i`][1][`$x`] * 
+			     edge_R16S[`$i`][0][`$y`];
+
+  //	dist_lg_R16S[`$i`] = edge_R16S[`$i`][0][`$x`][`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`] * 
+	//		     edge_R16S[`$i`][1][`$y`][`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`] - 
+	//		     edge_R16S[`$i`][1][`$x`][`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`] * 
+	//		     edge_R16S[`$i`][0][`$y`][`$sig_fig`-`$cut_top_bits`:`$cut_bot_bits`];
    end   
    //; }  
 

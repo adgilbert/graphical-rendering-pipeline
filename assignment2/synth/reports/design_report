@@ -5,7 +5,7 @@ Warning: Design 'rast' contains 2 high-fanout nets. A fanout number of 1000 will
 Report : design
 Design : rast
 Version: G-2012.06-SP5-1
-Date   : Fri Mar 10 23:39:28 2017
+Date   : Sun Mar 19 17:26:16 2017
 ****************************************
 
 Design allows ideal nets on clock nets.
@@ -40,12 +40,12 @@ Wire Loading Model:
 
     Selected automatically from the total cell area.
 
-Name           :   TSMC32K_Lowk_Conservative
+Name           :   TSMC16K_Lowk_Conservative
 Location       :   tcbn45gsbwpml
 Resistance     :   1e-05
 Capacitance    :   1
 Area           :   0
-Slope          :   0.0021
+Slope          :   0.0018
 Fanout   Length   Points Average Cap Std Deviation
 --------------------------------------------------------------
      1     0.00
@@ -55,7 +55,7 @@ Fanout   Length   Points Average Cap Std Deviation
      5     0.00
      6     0.00
      7     0.00
-     8     0.01
+     8     0.00
      9     0.01
     10     0.01
 

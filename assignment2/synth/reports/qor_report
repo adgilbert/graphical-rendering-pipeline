@@ -3,13 +3,13 @@
 Report : qor
 Design : rast
 Version: G-2012.06-SP5-1
-Date   : Fri Mar 10 23:39:37 2017
+Date   : Sun Mar 19 17:26:23 2017
 ****************************************
 
 
   Timing Path Group 'clk'
   -----------------------------------
-  Levels of Logic:              36.00
+  Levels of Logic:              33.00
   Critical Path Length:          0.79
   Critical Path Slack:           0.00
   Critical Path Clk Period:      0.80
@@ -25,46 +25,46 @@ Date   : Fri Mar 10 23:39:37 2017
   -----------------------------------
   Hierarchical Cell Count:          0
   Hierarchical Port Count:          0
-  Leaf Cell Count:              14041
-  Buf/Inv Cell Count:            3285
+  Leaf Cell Count:               7989
+  Buf/Inv Cell Count:            2672
   CT Buf/Inv Cell Count:            0
-  Combinational Cell Count:     11873
-  Sequential Cell Count:         2168
+  Combinational Cell Count:      6199
+  Sequential Cell Count:         1790
   Macro Count:                      0
   -----------------------------------
 
 
   Area
   -----------------------------------
-  Combinational Area:    18934.070501
-  Noncombinational Area: 10199.448109
-  Buf/Inv Area:           2209.233664
+  Combinational Area:     8680.820453
+  Noncombinational Area:  8360.654487
+  Buf/Inv Area:           1628.524850
   Net Area:                  0.000000
   -----------------------------------
-  Cell Area:             29133.518610
-  Design Area:           29133.518610
+  Cell Area:             17041.474940
+  Design Area:           17041.474940
 
 
   Design Rules
   -----------------------------------
-  Total Number of Nets:         15608
-  Nets With Violations:            12
+  Total Number of Nets:          8863
+  Nets With Violations:            15
   Max Trans Violations:             0
-  Max Cap Violations:              11
+  Max Cap Violations:              14
   Max Fanout Violations:            1
   -----------------------------------
 
 
-  Hostname: corn12.stanford.edu
+  Hostname: corn19.stanford.edu
 
   Compile CPU Statistics
   -----------------------------------------
-  Resource Sharing:                   60.96
-  Logic Optimization:                 32.02
-  Mapping Optimization:               85.67
+  Resource Sharing:                   20.85
+  Logic Optimization:                 11.88
+  Mapping Optimization:               33.69
   -----------------------------------------
-  Overall Compile Time:              195.41
-  Overall Compile Wall Clock Time:   199.03
+  Overall Compile Time:               81.35
+  Overall Compile Wall Clock Time:    84.21
 
   --------------------------------------------------------------------
 
