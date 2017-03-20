@@ -135,9 +135,17 @@ module `mname()`
    //Outputs
    output logic signed [`$sig_fig`-1:0] poly_R14S[`$verts`-1:0][`$axis`-1:0], //Micropolygon to Sample Test
    output logic unsigned [`$sig_fig`-1:0] color_R14U[`$colors`-1:0] , //Color of Poly
-   output logic signed [`$sig_fig`-1:0] sample_R14S[1:0], //Sample Location to Be Tested
-   output logic 			isQuad_R14H, //Micropygon is quad
-   output logic 			validSamp_R14H                   //Sample and Micropolygon are Valid
+   output logic         isQuad_R14H, //Micropygon is quad
+
+   // FOR TEST ITERATOR 1
+   output logic signed [`$sig_fig`-1:0] sample1_R14S[1:0], //Sample Location to Be Tested
+   output logic 			validSamp1_R14H,                   //Sample and Micropolygon are 
+
+   // FOR TEST ITERATOR 2
+   output logic signed [`$sig_fig`-1:0] sample2_R14S[1:0], //Sample Location to Be Tested
+   output logic         validSamp2_R14H2                   //Sample and Micropolygon are Valid
+
+
    );
    
    
@@ -151,9 +159,11 @@ module `mname()`
    // then instantiate registers for storing these states
    logic signed [`$sig_fig`-1:0] 	next_poly_R14S[`$verts`-1:0][`$axis`-1:0]; 
    logic unsigned  [`$sig_fig`-1:0] next_color_R14U[`$colors`-1:0] ;
-   logic signed [`$sig_fig`-1:0] 	next_sample_R14S[1:0];  
+   logic signed [`$sig_fig`-1:0] 	next_sample1_R14S[1:0];  
+   logic signed [`$sig_fig`-1:0]    next_sample2_R14S[1:0];  
    logic 				next_isQuad_R14H;                   
-   logic 				next_validSamp_R14H;                 
+   logic 				next_validSamp1_R14H; 
+   logic             next_validSamp2_R14H;                 
    logic 				next_halt_RnnnnL;
    
    
@@ -185,18 +195,28 @@ module `mname()`
    //;                        PipelineDepth=>1,
    //;                        Retime=>'NO' );
    `$d303->instantiate()` (
-			   .in(next_sample_R14S) , 
+			   .in(next_sample1_R14S) , 
 			   .clk(clk) , .reset(rst), .en(1'b1),
-			   .out(sample_R14S));				 
+			   .out(sample1_R14S));	
+
+   //; my $d303 = generate( 'dff2', "d303", 
+   //;                        BitWidth=>$sig_fig,
+   //;                        ArraySize1=>2,
+   //;                        PipelineDepth=>1,
+   //;                        Retime=>'NO' );
+   `$d303->instantiate()` (
+            .in(next_sample2_R14S) , 
+            .clk(clk) , .reset(rst), .en(1'b1),
+            .out(sample2_R14S)); 			 
    
    //; my $d304 = generate( 'dff', "d304", 
-   //;                        BitWidth=>3,
+   //;                        BitWidth=>4,
    //;                        PipelineDepth=>1,
    //;                        Retime=>'NO' );
    `$d304->instantiate()` (
-			   .in({next_validSamp_R14H, next_isQuad_R14H, next_halt_RnnnnL}) , 
+			   .in({next_validSamp1_R14H, next_validSamp2_R14H, next_isQuad_R14H, next_halt_RnnnnL}) , 
 			   .clk(clk) , .reset(rst), .en(1'b1),
-			   .out({validSamp_R14H, isQuad_R14H, halt_RnnnnL}));
+			   .out({validSamp1_R14H, validSamp2_R14H, isQuad_R14H, halt_RnnnnL}));
    // Instantiate registers for storing these states
    
 
@@ -243,12 +263,19 @@ module `mname()`
 			   .out(state_R14H));
    
    
-   // define some helper signals
-   logic signed [`$sig_fig`-1:0] 	next_up_samp_R14S[1:0]; //If jump up, next sample
-   logic signed [`$sig_fig`-1:0] 	next_rt_samp_R14S[1:0]; //If jump right, next sample
-   logic 				at_right_edg_R14H;      //Current sample at right edge of bbox?
-   logic 				at_top_edg_R14H;        //Current sample at top edge of bbox?
-   logic 				at_end_box_R14H;        //Current sample at end of bbox?
+   // define some helper signals for iterator 1
+   logic signed [`$sig_fig`-1:0] 	next_up_samp1_R14S[1:0]; //If jump up, next sample
+   logic signed [`$sig_fig`-1:0] 	next_rt_samp1_R14S[1:0]; //If jump right, next sample
+   logic 				at_right_edg1_R14H;      //Current sample at right edge of bbox?
+   logic 				at_top_edg1_R14H;        //Current sample at top edge of bbox?
+   logic 				at_end_box1_R14H;        //Current sample at end of bbox?
+
+   // define some helper signals for iterator 2
+   logic signed [`$sig_fig`-1:0]    next_dn_samp2_R14S[1:0]; //If jump down, next sample
+   logic signed [`$sig_fig`-1:0]    next_lt_samp2_R14S[1:0]; //If jump left, next sample
+   logic             at_left_edg2_R14H;      //Current sample at right edge of bbox?
+   logic             at_bot_edg2_R14H;        //Current sample at top edge of bbox?
+   logic             at_end_box2_R14H;        //Current sample at end of bbox?
 
    //////
    ////// First calculate the values of the helper signals using CURRENT STATES
@@ -265,13 +292,25 @@ module `mname()`
     // provided in a form that makes it easy to do this simply by concatenating it to the right size
     // and putting the subSample in the right position.
     assign delta = {{(`$sig_fig`-`$radix`-1){1'b0}}, subSample_RnnnnU, {(`$radix`-3){1'b0}}};
-    assign next_up_samp_R14S[0] = box_R14S[0][0]; // X is just the coordinate of our box
-    assign next_up_samp_R14S[1] = sample_R14S[1] + delta;  // add delta
-    assign next_rt_samp_R14S[0] = sample_R14S[0] + delta;  // add delta
-    assign next_rt_samp_R14S[1] = sample_R14S[1];          // same y coordinate
-    assign at_right_edg_R14H = (next_rt_samp_R14S[0] > box_R14S[1][0]); // at box edge
-    assign at_top_edg_R14H = (next_up_samp_R14S[1] > box_R14S[1][1]); // at top
-    assign at_end_box_R14H = (at_right_edg_R14H && at_top_edg_R14H); // at right and top
+
+
+    assign next_up_samp1_R14S[0] = box_R14S[0][0]; // X is just the coordinate of our box
+    assign next_up_samp1_R14S[1] = sample1_R14S[1] + delta;  // add delta
+    assign next_rt_samp1_R14S[0] = sample1_R14S[0] + delta;  // add delta
+    assign next_rt_samp1_R14S[1] = sample1_R14S[1];          // same y coordinate
+    assign at_right_edg1_R14H = (next_rt_samp_R14S[0] > box_R14S[1][0]); // at box edge
+    assign at_top_edg1_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp_R14S[1] >= (box_R14S[1][1] >> 1)+1) : (next_up_samp_R14S[1] >= (box_R14S[1][1] >> 1)); // at top
+    assign at_end_box1_R14H = (at_right_edg_R14H && at_top_edg_R14H); // at right and top
+
+
+    assign next_dn_samp2_R14S[0] = box_R14S[1][0]; // X is just the far coordinate of our box
+    assign next_dn_samp2_R14S[1] = sample1_R14S[1] - delta;  // subtract delta
+    assign next_lt_samp2_R14S[0] = sample1_R14S[0] - delta;  // subtract delta
+    assign next_lt_samp2_R14S[1] = sample1_R14S[1];          // same y coordinate
+    assign at_left_edg2_R14H = (next_rt_samp_R14S[0] < box_R14S[0][0]); // at box edge
+    assign at_bot_edg2_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp_R14S[1] > (box_R14S[1][1] >> 1)+1) : (next_up_samp_R14S[1] > (box_R14S[1][1] >> 1)); // at top
+    assign at_bot_edg2_R14H = next_dn_samp2_R14S[1] < (next_box_R14S[1][1] >> 1);
+    assign at_end_box2_R14H = (at_left_edg2_R14H && at_bot_edg2_R14H); // at right and top
 
    
    //////
@@ -284,8 +323,10 @@ module `mname()`
       always_comb begin
       unique case( state_R14H )
         ( WAIT_STATE ): begin
-	   next_sample_R14S    = box_R13S[0]; // start with the lower left edge
-	   next_validSamp_R14H = validPoly_R13H; // if valid input then set valid
+	   next_sample1_R14S    = box_R13S[0]; // start with the lower left corner
+      next_sample1_R14S    = box_R14S[1]; // start with upper right corner
+	   next_validSamp1_R14H = validPoly_R13H; // if valid input then set valid
+      next_validSamp2_R14H = validPoly_R13H; // if valid input then set valid
 	   next_isQuad_R14H    = isQuad_R13H; 
 	   next_state_R14H     = validPoly_R13H ? TEST_STATE : WAIT_STATE; // if valid input start testing
 	   next_poly_R14S      = poly_R13S;
@@ -294,14 +335,16 @@ module `mname()`
 	   next_halt_RnnnnL    = (validPoly_R13H) ? 0 : 1; // halt when we get a valid signal
 	end
 	( TEST_STATE ): begin
-	   next_sample_R14S    = at_right_edg_R14H ? next_up_samp_R14S : next_rt_samp_R14S; // move either right or left
-	   next_validSamp_R14H = (at_end_box_R14H) ? 0 : 1; // valid unless we are at the end of the box
+	   next_sample1_R14S    = at_right_edg1_R14H ? next_up_samp1_R14S : next_rt_samp1_R14S; // move either right or left
+      next_sample2_R14S    = at_left_edg2_R14H ? next_dn_samp2_R14S : next_lt_samp2_R14S; // move either down or left
+	   next_validSamp1_R14H = (at_end_box1_R14H) ? 0 : 1; // valid unless we are at the end of the box
+      next_validSamp2_R14H = (at_end_box2_R14H) ? 0 : 1; // valid unless we are at the end of the box
 	   next_isQuad_R14H    = isQuad_R14H;
-	   next_state_R14H     = at_end_box_R14H ? WAIT_STATE : TEST_STATE; // back to wait if we reach the end
+	   next_state_R14H     = (at_end_box1_R14H & at_end_box2_R14H) ? WAIT_STATE : TEST_STATE; // back to wait if we reach the end
 	   next_poly_R14S      = poly_R14S;
 	   next_color_R14U     = color_R14U;
 	   next_box_R14S       = box_R14S;
-	   next_halt_RnnnnL    = at_end_box_R14H; //stop halting if we reach the end
+	   next_halt_RnnnnL    = (at_end_box1_R14H & at_end_box2_R14H); //stop halting if we reach the end
 	end      
       endcase // case ( state_R14H )
       
@@ -323,10 +366,14 @@ module `mname()`
    endproperty
 
    //Check that Proposed Sample is in BBox
-   assert property( rb_lt( rst, next_sample_R14S[0] , next_box_R14S[1][0] , next_validSamp_R14H ));
-   assert property( rb_lt( rst, next_sample_R14S[1] , next_box_R14S[1][1] , next_validSamp_R14H ));
-   assert property( rb_lt( rst, next_box_R14S[0][0] , next_sample_R14S[0] , next_validSamp_R14H ));
-   assert property( rb_lt( rst, next_box_R14S[0][1] , next_sample_R14S[1] , next_validSamp_R14H ));
+   assert property( rb_lt( rst, next_sample1_R14S[0] , next_box_R14S[1][0] , next_validSamp1_R14H ));
+   assert property( rb_lt( rst, next_sample1_R14S[1] , next_box_R14S[1][1] , next_validSamp1_R14H ));
+   assert property( rb_lt( rst, next_sample2_R14S[0] , next_box_R14S[1][0] , next_validSamp2_R14H ));
+   assert property( rb_lt( rst, next_sample2_R14S[1] , next_box_R14S[1][1] , next_validSamp2_R14H ));
+   assert property( rb_lt( rst, next_box_R14S[0][0] , next_sample1_R14S[0] , next_validSamp1_R14H ));
+   assert property( rb_lt( rst, next_box_R14S[0][1] , next_sample1_R14S[1] , next_validSamp1_R14H ));
+   assert property( rb_lt( rst, next_box_R14S[0][0] , next_sample2_R14S[0] , next_validSamp2_R14H ));
+   assert property( rb_lt( rst, next_box_R14S[0][1] , next_sample2_R14S[1] , next_validSamp2_R14H ));
    //Check that Proposed Sample is in BBox
 
    //Error Checking Assertions
