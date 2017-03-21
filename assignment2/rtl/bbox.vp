@@ -313,51 +313,41 @@ end
    // Invalid if BBox is down/left of Screen
    // outvalid_R10H high if validPoly_R10H && BBox is valid
 
-   logic signed [`$sig_fig`-1:0]  mid[1:0];
-   logic signed [`$sig_fig`-1:0]   poly_shift_R10S[`$verts`-1:0][1:0]; 
-   logic signed [`$sig_fig`-1:0]    edge_R10S[`$edges`-1:0][1:0][1:0]; // Edges 
-   logic signed [2*`$shortSF`-1:0]   dist_lg_R10S[`$edges`-1:0]; 
-   logic         is_not_backfaced;
+//-----------------------------------------------------------------------------------------------
+
+   logic is_backfaced;
+   logic signed [`$sig_fig`-1-:0] polyX1X0;
+   logic signed [`$sig_fig`-1-:0] polyY2Y1;
+   logic signed [`$sig_fig`-1-:0] polyX2X1;
+   logic signed [`$sig_fig`-1-:0] polyY1Y0;
 
    always_comb begin
-   // if validPoly_R10H begin
-    mid[0] = out_box_R10S[0][0] + (out_box_R10S[1][0] - out_box_R10S[0][0]) >> 1;
-    mid[1] = out_box_R10S[0][1] + (out_box_R10S[1][1] - out_box_R10S[0][1]) >> 1;
-   // end
+      polyX1X0 = poly_R10S[1][0] - poly_R10S[0][0];
+      polyY2Y1 = poly_R10S[2][1] - poly_R10S[1][1];
+      polyX2X1 = poly_R10S[2][0] - poly_R10S[1][0];
+      polyY1Y0 = poly_R10S[1][1] - poly_R10S[0][1];
+
+      is_backfaced = polyX1X0 * polyY2Y1 - polyX2X1 * polyY1Y0 > 0;
    end
 
-   //; for( my $i = 0 ; $i < $verts ; $i++ ) {
-   //;  for( my $j = 0 ; $j < 2 ; $j++ ) {
-   always_comb begin
-      poly_shift_R10S[`$i`][`$j`] <= poly_R10S[`$i`][`$j`] - mid[`$j`]; 
-   end
-   //;  }
-   //; }
 
-  //; for( my $i = 0 ; $i < $verts ; $i++ ) {
-  //;  for( my $j = 0 ; $j < 2 ; $j++ ) {
-   always_comb begin
-     // assign edge_R10S (I made them so that they are the shifted edges)
-     // edge_R10S[edge#][x || y][x1 || x2] = poly_shift_R16S[vertex#][x || y]
-     edge_R10S[`$i`][`$j`][`$x`] = poly_shift_R10S[(`$j`+`$i`)%3][`$x`];
-     edge_R10S[`$i`][`$j`][`$y`] = poly_shift_R10S[(`$j`+`$i`)%3][`$y`];
-   end
-   //;  }
-   //; }
 
-    //; for( my $i = 0 ; $i < $verts ; $i++ ) {
-   always_comb begin
-     // assign dist_lg_R16S
-     dist_lg_R10S[`$i`] = edge_R10S[`$i`][0][`$x`]*edge_R10S[`$i`][1][`$y`] - edge_R10S[`$i`][1][`$x`]*edge_R10S[`$i`][0][`$y`];
-   end   
-   //; }  
+
+
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------------
 
   always_comb begin
      // assign hit_valid_R16H
      is_not_backfaced = (dist_lg_R10S[0] <= 0) && (dist_lg_R10S[1] < 0) && (dist_lg_R10S[2] <= 0);
    end   
-
-
 
    always_comb begin
 
@@ -375,7 +365,7 @@ end
       outvalid_R10H = (rounded_box_R10S[0][1] < 0) ? 0 : outvalid_R10H;
       outvalid_R10H = (rounded_box_R10S[1][0] > screen_RnnnnS[0]) ? 0 : outvalid_R10H;
       outvalid_R10H = (rounded_box_R10S[1][1] > screen_RnnnnS[1]) ? 0 : outvalid_R10H;
-      outvalid_R10H = outvalid_R10H && validPoly_R10H && is_not_backfaced;
+      outvalid_R10H = outvalid_R10H && validPoly_R10H && !is_not_backfaced;
 
    end
 
