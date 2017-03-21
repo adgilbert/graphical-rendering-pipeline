@@ -314,20 +314,12 @@ end
    // outvalid_R10H high if validPoly_R10H && BBox is valid
 
 //-----------------------------------------------------------------------------------------------
+// Implementing backface culling in bbox.vp
 
    logic is_backfaced;
-   logic signed [`$sig_fig`-1:0] polyX1X0;
-   logic signed [`$sig_fig`-1:0] polyY2Y1;
-   logic signed [`$sig_fig`-1:0] polyX2X1;
-   logic signed [`$sig_fig`-1:0] polyY1Y0;
 
    always_comb begin
-      polyX1X0 = poly_R10S[1][0] - poly_R10S[0][0];
-      polyY2Y1 = poly_R10S[2][1] - poly_R10S[1][1];
-      polyX2X1 = poly_R10S[2][0] - poly_R10S[1][0];
-      polyY1Y0 = poly_R10S[1][1] - poly_R10S[0][1];
-
-      is_backfaced = polyX1X0 * polyY2Y1 - polyX2X1 * polyY1Y0 > 0;
+      is_backfaced = (poly_R10S[1][0] - poly_R10S[0][0]) * (poly_R10S[2][1] - poly_R10S[1][1]) - (poly_R10S[2][0] - poly_R10S[1][0]) * (poly_R10S[1][1] - poly_R10S[0][1]) > 0;
    end
 
 
