@@ -316,10 +316,10 @@ end
 //-----------------------------------------------------------------------------------------------
 
    logic is_backfaced;
-   logic signed [`$sig_fig`-1-:0] polyX1X0;
-   logic signed [`$sig_fig`-1-:0] polyY2Y1;
-   logic signed [`$sig_fig`-1-:0] polyX2X1;
-   logic signed [`$sig_fig`-1-:0] polyY1Y0;
+   logic signed [`$sig_fig`-1:0] polyX1X0;
+   logic signed [`$sig_fig`-1:0] polyY2Y1;
+   logic signed [`$sig_fig`-1:0] polyX2X1;
+   logic signed [`$sig_fig`-1:0] polyY1Y0;
 
    always_comb begin
       polyX1X0 = poly_R10S[1][0] - poly_R10S[0][0];
@@ -343,11 +343,7 @@ end
 
 
 //-----------------------------------------------------------------------------------------------
-
-  always_comb begin
-     // assign hit_valid_R16H
-     is_not_backfaced = (dist_lg_R10S[0] <= 0) && (dist_lg_R10S[1] < 0) && (dist_lg_R10S[2] <= 0);
-   end   
+   
 
    always_comb begin
 
@@ -365,7 +361,7 @@ end
       outvalid_R10H = (rounded_box_R10S[0][1] < 0) ? 0 : outvalid_R10H;
       outvalid_R10H = (rounded_box_R10S[1][0] > screen_RnnnnS[0]) ? 0 : outvalid_R10H;
       outvalid_R10H = (rounded_box_R10S[1][1] > screen_RnnnnS[1]) ? 0 : outvalid_R10H;
-      outvalid_R10H = outvalid_R10H && validPoly_R10H && !is_not_backfaced;
+      outvalid_R10H = outvalid_R10H && validPoly_R10H && !is_backfaced;
 
    end
 
