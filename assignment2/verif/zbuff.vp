@@ -129,11 +129,16 @@ module `mname()`
    
     //                               
 
-   logic unsigned [`$fb_l2`-1:0]  x_ind;
-   logic unsigned [`$fb_l2`-1:0]  y_ind;
-   logic unsigned [`$ss_l2`-1:0]  x_ss_ind;
-   logic unsigned [`$ss_l2`-1:0]  y_ss_ind;
-   logic unsigned [`$sig_fig`-1:0] depth;
+   logic unsigned [`$fb_l2`-1:0]  x_ind1;
+   logic unsigned [`$fb_l2`-1:0]  y_ind1;
+   logic unsigned [`$ss_l2`-1:0]  x_ss_ind1;
+   logic unsigned [`$ss_l2`-1:0]  y_ss_ind1;
+   logic unsigned [`$sig_fig`-1:0] depth1;
+   logic unsigned [`$fb_l2`-1:0]  x_ind2;
+   logic unsigned [`$fb_l2`-1:0]  y_ind2;
+   logic unsigned [`$ss_l2`-1:0]  x_ss_ind2;
+   logic unsigned [`$ss_l2`-1:0]  y_ss_ind2;
+   logic unsigned [`$sig_fig`-1:0] depth2;
    logic unsigned [`$sig_fig`-1:0] color[`$colors`-1:0];
 
    int unsigned     x_max ;
@@ -148,9 +153,13 @@ module `mname()`
    assign big_zero = 128'd0;
    assign zero = big_zero[`$sig_fig`-1:0];
 
-   assign  depth = unsigned'(hit_R18S[2]);
-   assign  x_ind = hit_R18S[0][(`$radix`+`$fb_l2`-1):`$radix`];
-   assign  y_ind = hit_R18S[1][(`$radix`+`$fb_l2`-1):`$radix`];
+   assign  depth1 = unsigned'(hit1_R18S[2]); //'
+   assign  x_ind1 = hit1_R18S[0][(`$radix`+`$fb_l2`-1):`$radix`];
+   assign  y_ind1 = hit1_R18S[1][(`$radix`+`$fb_l2`-1):`$radix`];
+
+   assign  depth2 = unsigned'(hit1_R18S[2]); //'
+   assign  x_ind2 = hit2_R18S[0][(`$radix`+`$fb_l2`-1):`$radix`];
+   assign  y_ind2 = hit2_R18S[1][(`$radix`+`$fb_l2`-1):`$radix`];
 
    //Brittle Only works for `$colors`=3
    assign color[0] = color_R18U[0];
@@ -164,17 +173,31 @@ module `mname()`
    always_comb begin
 
       unique case ( subSample_RnnnnU )
-	(4'b1000 ): x_ss_ind[`$ss_l2`-1:0] =   zero[`$ss_l2`-1:0] ;
-	(4'b0100 ): x_ss_ind[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit_R18S[0][`$radix`-1] }  ;
-	(4'b0010 ): x_ss_ind[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit_R18S[0][`$radix`-1:`$radix`-2] }  ;
-	(4'b0001 ): x_ss_ind[`$ss_l2`-1:0] = {                   hit_R18S[0][`$radix`-1:`$radix`-3] }  ;
+	(4'b1000 ): x_ss_ind1[`$ss_l2`-1:0] =   zero[`$ss_l2`-1:0] ;
+	(4'b0100 ): x_ss_ind1[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit1_R18S[0][`$radix`-1] }  ;
+	(4'b0010 ): x_ss_ind1[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit1_R18S[0][`$radix`-1:`$radix`-2] }  ;
+	(4'b0001 ): x_ss_ind1[`$ss_l2`-1:0] = {                   hit1_R18S[0][`$radix`-1:`$radix`-3] }  ;
       endcase // case ( subSample_RnnnnU )
       
       unique case ( subSample_RnnnnU )
-	(4'b1000 ): y_ss_ind[`$ss_l2`-1:0] =   zero[`$ss_l2`-1:0] ;
-	(4'b0100 ): y_ss_ind[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit_R18S[1][`$radix`-1] }  ;
-	(4'b0010 ): y_ss_ind[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit_R18S[1][`$radix`-1:`$radix`-2] }  ;
-	(4'b0001 ): y_ss_ind[`$ss_l2`-1:0] = {                   hit_R18S[1][`$radix`-1:`$radix`-3] }  ;
+	(4'b1000 ): y_ss_ind1[`$ss_l2`-1:0] =   zero[`$ss_l2`-1:0] ;
+	(4'b0100 ): y_ss_ind1[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit1_R18S[1][`$radix`-1] }  ;
+	(4'b0010 ): y_ss_ind1[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit1_R18S[1][`$radix`-1:`$radix`-2] }  ;
+	(4'b0001 ): y_ss_ind1[`$ss_l2`-1:0] = {                   hit1_R18S[1][`$radix`-1:`$radix`-3] }  ;
+      endcase // case ( subSample_RnnnnU )
+
+      unique case ( subSample_RnnnnU )
+	(4'b1000 ): x_ss_ind2[`$ss_l2`-1:0] =   zero[`$ss_l2`-1:0] ;
+	(4'b0100 ): x_ss_ind2[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit2_R18S[0][`$radix`-1] }  ;
+	(4'b0010 ): x_ss_ind2[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit2_R18S[0][`$radix`-1:`$radix`-2] }  ;
+	(4'b0001 ): x_ss_ind2[`$ss_l2`-1:0] = {                   hit2_R18S[0][`$radix`-1:`$radix`-3] }  ;
+      endcase // case ( subSample_RnnnnU )
+      
+      unique case ( subSample_RnnnnU )
+	(4'b1000 ): y_ss_ind2[`$ss_l2`-1:0] =   zero[`$ss_l2`-1:0] ;
+	(4'b0100 ): y_ss_ind2[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit2_R18S[1][`$radix`-1] }  ;
+	(4'b0010 ): y_ss_ind2[`$ss_l2`-1:0] = { zero[`$ss_l2`-1:1] , hit2_R18S[1][`$radix`-1:`$radix`-2] }  ;
+	(4'b0001 ): y_ss_ind2[`$ss_l2`-1:0] = {                   hit2_R18S[1][`$radix`-1:`$radix`-3] }  ;
       endcase // case ( subSample_RnnnnU )
 
       unique case ( subSample_RnnnnU )
@@ -198,12 +221,22 @@ module `mname()`
     
    always @(posedge clk) begin
       #25;
-	 if( (hit_valid1_R18H || hit_valid2_R18H) && ~rst ) begin
-	    zbuff_rop(  x_ind ,   //Hit Loc. X
-			y_ind ,   //Hit Loc. Y
-			x_ss_ind ,  //`$ss` Hit loc X
-			y_ss_ind ,  //`$ss` Hit Loc Y
-			depth , //actually a uint
+	 if( (hit_valid1_R18H) && ~rst ) begin
+	    zbuff_rop(  x_ind1 ,   //Hit Loc. X
+			y_ind1 ,   //Hit Loc. Y
+			x_ss_ind1 ,  //`$ss` Hit loc X
+			y_ss_ind1 ,  //`$ss` Hit Loc Y
+			depth1 , //actually a uint
+			color[0] , //actually a ushort
+			color[1] , //actually a ushort
+			color[2]  //actually a ushort
+		) ;
+		if( (hit_valid1_R18H) && ~rst ) begin
+	    zbuff_rop(  x_ind2 ,   //Hit Loc. X
+			y_ind2 ,   //Hit Loc. Y
+			x_ss_ind2 ,  //`$ss` Hit loc X
+			y_ss_ind2 ,  //`$ss` Hit Loc Y
+			depth2 , //actually a uint
 			color[0] , //actually a ushort
 			color[1] , //actually a ushort
 			color[2]  //actually a ushort

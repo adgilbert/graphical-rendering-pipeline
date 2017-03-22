@@ -228,8 +228,8 @@ module `mname()`
    `$sampletest -> instantiate()` (   
 				      .poly_R16S(poly_R16S),
 				      .color_R16U(color_R16U),			
-				      .sample_R16S(sample1_R16S),
-				      .validSamp_R16H(validSamp1_R16H),
+				      .sample1_R16S(sample1_R16S),
+				      .validSamp1_R16H(validSamp1_R16H),
                   .sample2_R16S(sample2_R16S),
                   .validSamp2_R16H(validSamp2_R16H),
 				      .isQuad_R16H(isQuad_R16H),

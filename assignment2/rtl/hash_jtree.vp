@@ -114,7 +114,7 @@ module `mname()`
    logic 			     unsigned [`$sig_fig`-1:0]   color_R16U_retime[`$colors`-1:0];      // Color of Poly
    logic signed [`$sig_fig`-1:0]     sample1_R16S_retime[1:0];   // Sample Location    
    logic 			     validSamp1_R16H_retime;                    // A valid sample location
-   ogic signed [`$sig_fig`-1:0]     sample2_R16S_retime[1:0];   // Sample Location    
+   logic signed [`$sig_fig`-1:0]     sample2_R16S_retime[1:0];   // Sample Location    
    logic 			     validSamp2_R16H_retime;                    // A valid sample location
    logic 			     isQuad_R16H_retime;   //Micropolygon is quad  
    // output for retiming registers
@@ -166,28 +166,37 @@ module `mname()`
 
    end*/
    
-   //; my $xjit_hash = generate ('tree_hash', ' xjit_hash',
+   //; my $xjit_hash1 = generate ('tree_hash', ' xjit_hash1',
    //;                            InWidth=>$hash_in_width,
    //;                            OutWidth=>$hash_out_width );
-   `$xjit_hash -> instantiate()` (
-	      .in_RnnH( { sample_R14S[1][`$sig_fig`-1:4] , sample_R14S[0][`$sig_fig`-1:4]}   ),
+   `$xjit_hash1 -> instantiate()` (
+	      .in_RnnH( { sample1_R14S[1][`$sig_fig`-1:4] , sample2_R14S[0][`$sig_fig`-1:4]}   ),
 	      .mask_RnnH( hash_mask_R14H ),
-	      .out_RnnH( jitt_val_R14H[0] )
+	      .out_RnnH( jitt_val1_R14H[0] )
+	      );
+
+      //; my $xjit_hash2 = generate ('tree_hash', ' xjit_hash2',
+   //;                            InWidth=>$hash_in_width,
+   //;                            OutWidth=>$hash_out_width );
+   `$xjit_hash2 -> instantiate()` (
+	      .in_RnnH( { sample2_R14S[1][`$sig_fig`-1:4] , sample2_R14S[0][`$sig_fig`-1:4]}   ),
+	      .mask_RnnH( hash_mask_R14H ),
+	      .out_RnnH( jitt_val2_R14H[0] )
 	      );
    
-   //; my $yjit_hash = generate ('tree_hash', ' yjit_hash1',
+   //; my $yjit_hash1 = generate ('tree_hash', ' yjit_hash1',
    //;                            InWidth=>$hash_in_width,
    //;                            OutWidth=>$hash_out_width );
-   `$yjit_hash -> instantiate()` (
+   `$yjit_hash1 -> instantiate()` (
 	      .in_RnnH( { sample1_R14S[0][`$sig_fig`-1:4] , sample1_R14S[1][`$sig_fig`-1:4]} ),
 	      .mask_RnnH( hash_mask_R14H ),
 	      .out_RnnH( jitt_val1_R14H[1] )
 	      );
 
-   //; my $yjit_hash = generate ('tree_hash', ' yjit_hash2',
+   //; my $yjit_hash2 = generate ('tree_hash', ' yjit_hash2',
    //;                            InWidth=>$hash_in_width,
    //;                            OutWidth=>$hash_out_width );
-   `$yjit_hash -> instantiate()` (
+   `$yjit_hash2 -> instantiate()` (
 	      .in_RnnH( { sample2_R14S[0][`$sig_fig`-1:4] , sample2_R14S[1][`$sig_fig`-1:4]} ),
 	      .mask_RnnH( hash_mask_R14H ),
 	      .out_RnnH( jitt_val2_R14H[1] )
@@ -242,24 +251,34 @@ module `mname()`
 				     .clk(clk) , .reset(rst), .en(1'b1),
 				     .out(color_R16U_retime));
 					 
-	//; my $d_hash_r3 = generate( 'dff2', "d_hash_r3", 
+	//; my $d_hash_r3_1 = generate( 'dff2', "d_hash_r3_1", 
 	//;                        BitWidth=>$sig_fig,
 	//;                        ArraySize1=>2,
 	//;                        PipelineDepth=>$pipe_depth-1,
 	//;                        Retime=>'YES' );
-	`$d_hash_r3->instantiate()` (
-					 .in({sample_jitted1_R14S, sample_jitted2_R14S}) , 
+	`$d_hash_r3_1->instantiate()` (
+					 .in(sample_jitted1_R14S) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({sample1_R16S_retime, sample2_R16S_retime}));	
+				     .out(sample1_R16S_retime));	
+
+	//; my $d_hash_r3_2 = generate( 'dff2', "d_hash_r3_2", 
+	//;                        BitWidth=>$sig_fig,
+	//;                        ArraySize1=>2,
+	//;                        PipelineDepth=>$pipe_depth-1,
+	//;                        Retime=>'YES' );
+	`$d_hash_r3_2->instantiate()` (
+					 .in(sample_jitted2_R14S) , 
+				     .clk(clk) , .reset(rst), .en(1'b1),
+				     .out(sample2_R16S_retime));	
 					 
 	//; my $d_hash_r4 = generate( 'dff', "d_hash_r4", 
-	//;                        BitWidth=>2,
+	//;                        BitWidth=>3,
 	//;                        PipelineDepth=>$pipe_depth-1,
 	//;                        Retime=>'YES' );
 	`$d_hash_r4->instantiate()` (
-				     .in({validSamp_R14H, isQuad_R14H}) , 
+				     .in({validSamp1_R14H, validSamp1_R14H, isQuad_R14H}) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({validSamp_R16H_retime, isQuad_R16H_retime}));		
+				     .out({validSamp1_R16H_retime, validSamp1_R16H_retime, isQuad_R16H_retime}));		
    //Flop R14 to R16_retime with retiming registers			
 
 
@@ -287,24 +306,34 @@ module `mname()`
 				     .clk(clk) , .reset(rst), .en(1'b1),
 				     .out(color_R16U));
 					 
-	//; my $d_hash_f3 = generate( 'dff2', "d_hash_f3", 
+	//; my $d_hash_f3_1 = generate( 'dff2', "d_hash_f3_1", 
 	//;                        BitWidth=>$sig_fig,
 	//;                        ArraySize1=>2,
 	//;                        PipelineDepth=>1,
 	//;                        Retime=>'NO' );
-	`$d_hash_f3->instantiate()` (
-					 .in(sample_R16S_retime) , 
+	`$d_hash_f3_1->instantiate()` (
+					 .in(sample1_R16S_retime) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out(sample_R16S));	
+				     .out(sample1_R16S));
+
+	//; my $d_hash_f3_2 = generate( 'dff2', "d_hash_f3_2", 
+	//;                        BitWidth=>$sig_fig,
+	//;                        ArraySize1=>2,
+	//;                        PipelineDepth=>1,
+	//;                        Retime=>'NO' );
+	`$d_hash_f3_2 ->instantiate()` (
+					 .in(sample2_R16S_retime) , 
+				     .clk(clk) , .reset(rst), .en(1'b1),
+				     .out(sample2_R16S));	
 					 
 	//; my $d_hash_f4 = generate( 'dff', "d_hash_f4", 
-	//;                        BitWidth=>2,
+	//;                        BitWidth=>3,
 	//;                        PipelineDepth=>1,
 	//;                        Retime=>'NO' );
 	`$d_hash_f4->instantiate()` (
-				     .in({validSamp_R16H_retime, isQuad_R16H_retime}) , 
+				     .in({validSamp1_R16H_retime, validSamp2_R16H_retime, isQuad_R16H_retime}) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({validSamp_R16H, isQuad_R16H}));	
+				     .out({validSamp1_R16H, validSamp2_R16H, isQuad_R16H}));	
 	//Flop R16_retime to R16 with fixed registers				 
 	
 

@@ -204,8 +204,10 @@ module `mname()`
 	 		 .poly_R16S(`$dut_obj->get_instance_path()`.poly_R16S),           // 4 Sets X,Y Fixed Point Values
 			 .color_R16U(`$dut_obj->get_instance_path()`.color_R16U),         // Polygon Color
 			 .isQuad_R16H(`$dut_obj->get_instance_path()`.isQuad_R16H),       // Is Poly Quad?
-		 	 .validSamp_R16H(`$dut_obj->get_instance_path()`.validSamp_R16H), 
-			 .sample_R16S(`$dut_obj->get_instance_path()`.sample_R16S),       // Will change for JIT -todo
+		 	 .validSamp1_R16H(`$dut_obj->get_instance_path()`.validSamp1_R16H), 
+			 .sample1_R16S(`$dut_obj->get_instance_path()`.sample1_R16S),       // Will change for JIT -todo
+			 .validSamp2_R16H(`$dut_obj->get_instance_path()`.validSamp2_R16H), 
+			 .sample2_R16S(`$dut_obj->get_instance_path()`.sample2_R16S),       // Will change for JIT -todo
 			      
   			 .clk(clk),                // Clock 
  			 .rst(rst),                // Reset
@@ -231,8 +233,10 @@ module `mname()`
 	 		 .poly_R16S(`$dut_obj->get_instance_path()`.poly_R16S),           // 4 Sets X,Y Fixed Point Values
 			 .color_R16U(`$dut_obj->get_instance_path()`.color_R16U),         // Polygon Color
 			 .isQuad_R16H(`$dut_obj->get_instance_path()`.isQuad_R16H),       // Is Poly Quad?
-		 	 .validSamp_R16H(`$dut_obj->get_instance_path()`.validSamp_R16H), 
-			 .sample_R16S(`$dut_obj->get_instance_path()`.sample_R16S),       // Will change for JIT -todo
+		 	 .validSamp1_R16H(`$dut_obj->get_instance_path()`.validSamp1_R16H), 
+			 .sample1_R16S(`$dut_obj->get_instance_path()`.sample1_R16S),       // Will change for JIT -todo
+			 .validSamp2_R16H(`$dut_obj->get_instance_path()`.validSamp2_R16H), 
+			 .sample2_R16S(`$dut_obj->get_instance_path()`.sample2_R16S),       // Will change for JIT -todo
 			      
   			 .clk(clk),                // Clock 
  			 .rst(rst),                // Reset
@@ -246,12 +250,18 @@ module `mname()`
 		 	 .screen_RnnnnS(screen_RnnnnS),         // Screen Size
 	                 .subSample_RnnnnU(subSample_RnnnnU),    // Flag for subsample
 							   
-			 .s_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_R14S[0]) ,
-                         .s_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_R14S[1]) ,
-                         .jitter_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val_R14H[0]) ,
-                         .jitter_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val_R14H[1]) ,  
-			 .s_j_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted_R14S[0]),
-			 .s_j_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted_R14S[1])
+			 .s_x1_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample1_R14S[0]) ,
+             .s_y1_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample1_R14S[1]) ,
+             .jitter_x1_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val1_R14H[0]) ,
+             .jitter_y1_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val1_R14H[1]) ,  
+			 .s_j_x1_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted1_R14S[0]),
+			 .s_j_y1_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted1_R14S[1]),
+			 .s_x2_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample2_R14S[0]) ,
+             .s_y2_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample2_R14S[1]) ,
+             .jitter_x2_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val2_R14H[0]) ,
+             .jitter_y2_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val2_R14H[1]) ,  
+			 .s_j_x2_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted2_R14S[0]),
+			 .s_j_y2_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted2_R14S[1])
 
 			 );
 			 
@@ -273,8 +283,10 @@ module `mname()`
 	 		 .poly_R16S(`$dut_obj->get_instance_path()`.poly_R16S),           // 4 Sets X,Y Fixed Point Values
 			 .color_R16U(`$dut_obj->get_instance_path()`.color_R16U),         // Polygon Color
 			 .isQuad_R16H(`$dut_obj->get_instance_path()`.isQuad_R16H),       // Is Poly Quad?
-		 	 .validSamp_R16H(`$dut_obj->get_instance_path()`.validSamp_R16H), 
-			 .sample_R16S(`$dut_obj->get_instance_path()`.sample_R16S),       // Will change for JIT -todo
+		 	 .validSamp1_R16H(`$dut_obj->get_instance_path()`.validSamp1_R16H), 
+			 .sample1_R16S(`$dut_obj->get_instance_path()`.sample1_R16S),       // Will change for JIT -todo
+			 .validSamp2_R16H(`$dut_obj->get_instance_path()`.validSamp2_R16H), 
+			 .sample2_R16S(`$dut_obj->get_instance_path()`.sample2_R16S),       // Will change for JIT -todo
 			      
   			 .clk(clk),                // Clock 
  			 .rst(rst),                // Reset
@@ -345,8 +357,10 @@ module `mname()`
 			.box_R14S(`$dut_obj->get_instance_path()`.test_iterator.box_R14S),
  			.poly_R14S(`$dut_obj->get_instance_path()`.poly_R14S) ,           
 			.isQuad_R14H(`$dut_obj->get_instance_path()`.isQuad_R14H) ,                    
-			.sample_R14S(`$dut_obj->get_instance_path()`.sample_R14S),         //Sample Location 
-			.validSamp_R14H(`$dut_obj->get_instance_path()`.validSamp_R14H),   // Valid Data for Operation
+			.sample1_R14S(`$dut_obj->get_instance_path()`.sample1_R14S),         //Sample Location 
+			.validSamp1_R14H(`$dut_obj->get_instance_path()`.validSamp1_R14H),   // Valid Data for Operation
+			.sample2_R14S(`$dut_obj->get_instance_path()`.sample2_R14S),         //Sample Location 
+			.validSamp2_R14H(`$dut_obj->get_instance_path()`.validSamp2_R14H),   // Valid Data for Operation
 			     
 			.clk(clk),                                       // Input: Clock 
 			.rst(rst),                                       // Input: Reset
@@ -369,8 +383,10 @@ module `mname()`
 	 		 .poly_R16S(`$dut_obj->get_instance_path()`.poly_R16S),           // 4 Sets X,Y Fixed Point Values
 			 .color_R16U(`$dut_obj->get_instance_path()`.color_R16U),         // Polygon Color
 			 .isQuad_R16H(`$dut_obj->get_instance_path()`.isQuad_R16H),       // Is Poly Quad?
-		 	 .validSamp_R16H(`$dut_obj->get_instance_path()`.validSamp_R16H), 
-			 .sample_R16S(`$dut_obj->get_instance_path()`.sample_R16S),       // Will change for JIT -todo
+		 	 .validSamp1_R16H(`$dut_obj->get_instance_path()`.validSamp1_R16H), 
+			 .sample1_R16S(`$dut_obj->get_instance_path()`.sample1_R16S),       // Will change for JIT -todo
+			 .validSamp2_R16H(`$dut_obj->get_instance_path()`.validSamp2_R16H), 
+			 .sample2_R16S(`$dut_obj->get_instance_path()`.sample2_R16S),       // Will change for JIT -todo
 			      
   			 .clk(clk),                // Clock 
  			 .rst(rst),                // Reset

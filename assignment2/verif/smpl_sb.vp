@@ -80,8 +80,10 @@ module `mname()`
   input logic signed   [`$sig_fig`-1:0]  poly_R16S[`$verts`-1:0][`$axis`-1:0],  // 4 Sets X,Y Fixed Point Values
   input logic unsigned [`$sig_fig`-1:0]  color_R16U[`$colors`-1:0],          // 4 Sets X,Y Fixed Point Values
   input logic                        isQuad_R16H,                     // Is Poly Quad?
-  input logic                        validSamp_R16H,
-  input logic signed   [`$sig_fig`-1:0]  sample_R16S[1:0],
+  input logic                        validSamp1_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample1_R16S[1:0],
+  input logic                        validSamp2_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample2_R16S[1:0],
 			 
   input logic                        clk,                // Clock 
   input logic                        rst,                // Reset
@@ -98,17 +100,19 @@ module `mname()`
    logic signed   [`$sig_fig`-1:0]  poly_RnnS[`$verts`-1:0][`$axis`-1:0];    // 4 Sets X,Y Fixed Point Values
    logic unsigned [`$sig_fig`-1:0]  color_RnnU[`$colors`-1:0];
    logic 		        isQuad_RnnH;                       // Is Poly Quad?
-   logic 		        validSamp_RnnH;
-   logic signed   [`$sig_fig`-1:0]  sample_RnnS[1:0];             //
+   logic 		        validSamp1_RnnH;
+   logic signed   [`$sig_fig`-1:0]  sample1_RnnS[1:0];             //
+   logic 		        validSamp2_RnnH;
+   logic signed   [`$sig_fig`-1:0]  sample2_RnnS[1:0]; 
    //Pipe Signals for Later Evaluation
 
    //Helper Signals
    int 		       one;
    int 		       file;
-   logic 			hit_valid_R18H;
+   // logic 			hit_valid_R18H;
    
    assign one = 1 ;
-   assign hit_valid_R18H = hit_valid1_R18H | hit_valid2_R18H;
+   // assign hit_valid_R18H = hit_valid1_R18H | hit_valid2_R18H;
    //Helper Signals
 
 
@@ -138,9 +142,23 @@ module `mname()`
 					 int'(poly_RnnS[`$verts`-1][0]), //uPoly
 					 int'(poly_RnnS[`$verts`-1][1]), //uPoly
 					 int'(isQuad_RnnH)    , //uPoly	
-					 int'(sample_RnnS[0]) , //SAMPLE 
-					 int'(sample_RnnS[1]) , //SAMPLE
-					 int'(hit_valid_R18H)   //IS HIT
+					 int'(sample1_RnnS[0]) , //SAMPLE 
+					 int'(sample1_RnnS[1]) , //SAMPLE
+					 int'(hit_valid1_R18H)   //IS HIT
+				      )
+	   &&
+	   one !=  rastBBox_stest_check( int'(poly_RnnS[0][0]), //uPoly
+				         int'(poly_RnnS[0][1]), //uPoly
+					 int'(poly_RnnS[1][0]), //uPoly
+					 int'(poly_RnnS[1][1]), //uPoly
+					 int'(poly_RnnS[2][0]), //uPoly
+					 int'(poly_RnnS[2][1]), //uPoly
+					 int'(poly_RnnS[`$verts`-1][0]), //uPoly
+					 int'(poly_RnnS[`$verts`-1][1]), //uPoly
+					 int'(isQuad_RnnH)    , //uPoly	
+					 int'(sample2_RnnS[0]) , //SAMPLE 
+					 int'(sample2_RnnS[1]) , //SAMPLE
+					 int'(hit_valid2_R18H)   //IS HIT
 				      )) begin
 
 	    $fwrite( file , "@%0t: Sample Test ERROR!!!!\n\t\t" , $time );
@@ -194,25 +212,36 @@ module `mname()`
 				     .clk(clk) , .reset(rst), .en(1'b1),
 				     .out(color_RnnU));
 	
-	//; my $d_03 = generate( 'dff2', "d_03", 
+	//; my $d_03_1 = generate( 'dff2', "d_03_1", 
 	//;                        BitWidth=>$sig_fig,
 	//;                        ArraySize1=>2,
 	//;                        PipelineDepth=>$pipe_depth,
 	//;                        Retime=>'NO' );
-	`$d_03->instantiate()` (
-					 .in(sample_R16S) , 
+	`$d_03_1->instantiate()` (
+					 .in(sample1_R16S) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out(sample_RnnS));				 
+				     .out(sample1_RnnS));
+
+	//; my $d_03_2 = generate( 'dff2', "d_03_2", 
+	//;                        BitWidth=>$sig_fig,
+	//;                        ArraySize1=>2,
+	//;                        PipelineDepth=>$pipe_depth,
+	//;                        Retime=>'NO' );
+	`$d_03_2->instantiate()` (
+					 .in(sample2_R16S) , 
+				     .clk(clk) , .reset(rst), .en(1'b1),
+				     .out(sample2_RnnS));				 
 					 						
 	//; my $d_04 = generate( 'dff', "d_04", 
-	//;                        BitWidth=>2,
+	//;                        BitWidth=>3,
 	//;                        PipelineDepth=>$pipe_depth,
 	//;                        Retime=>'NO' );
 	
 	`$d_04->instantiate()` (
-					 .in({validSamp_R16H, isQuad_R16H}) , 
+					 .in({validSamp1_R16H, validSamp2_R16H, isQuad_R16H}) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({validSamp_RnnH, isQuad_RnnH}));	
+				     .out({validSamp1_RnnH, validSamp2_RnnH, isQuad_RnnH}));	
+
 					 
 /* Pipe Required Signals */
 

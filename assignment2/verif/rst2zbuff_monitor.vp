@@ -61,15 +61,19 @@ module `mname()`
   input logic signed   [`$sig_fig`-1:0]  poly_R16S[`$verts`-1:0][`$axis`-1:0],  // 4 Sets X,Y Fixed Point Values
   input logic unsigned [`$sig_fig`-1:0]  color_R16U[`$colors`-1:0],          // 4 Sets X,Y Fixed Point Values
   input logic                        isQuad_R16H,                     // Is Poly Quad?
-  input logic                        validSamp_R16H,
-  input logic signed   [`$sig_fig`-1:0]  sample_R16S[1:0],
+  input logic                        validSamp1_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample1_R16S[1:0],
+  input logic                        validSamp2_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample2_R16S[1:0],
 			 
   input logic                        clk,                // Clock 
   input logic                        rst,                // Reset
 			 
-  input logic signed [`$sig_fig`-1:0]   hit_R18S[`$axis`-1:0],
+  input logic signed [`$sig_fig`-1:0]   hit1_R18S[`$axis`-1:0],
+  input logic signed [`$sig_fig`-1:0]   hit2_R18S[`$axis`-1:0],
   input logic signed [`$sig_fig`-1:0]   color_R18U[`$colors`-1:0],
-  input                             hit_valid_R18H 
+  input                             hit_valid1_R18H, 
+  input                             hit_valid2_R18H 
 );
 
    //Pipe Signals for Later Evaluation
@@ -77,8 +81,10 @@ module `mname()`
    logic signed   [`$sig_fig`-1:0]  poly_Rn1S[`$verts`-1:0][`$axis`-1:0];    // 4 Sets X,Y Fixed Point Values
    logic unsigned [`$sig_fig`-1:0]  color_RnnU[`$colors`-1:0];
    logic 		        isQuad_RnnH;                       // Is Poly Quad?
-   logic 		        validSamp_RnnH;
-   logic signed   [`$sig_fig`-1:0]  sample_RnnS[1:0];             //
+   logic 		        validSamp1_RnnH;
+   logic 		        validSamp2_RnnH;
+   logic signed   [`$sig_fig`-1:0]  sample1_RnnS[1:0];             //
+   logic signed   [`$sig_fig`-1:0]  sample2_RnnS[1:0];             //
    //Pipe Signals for Later Evaluation
 
  
@@ -114,25 +120,35 @@ module `mname()`
 				     .clk(clk) , .reset(rst), .en(1'b1),
 				     .out(color_RnnU));
 	
-	//; my $d_03 = generate( 'dff2', "d_03", 
+	//; my $d_03_1 = generate( 'dff2', "d_03_1", 
 	//;                        BitWidth=>$sig_fig,
 	//;                        ArraySize1=>2,
 	//;                        PipelineDepth=>$pipe_depth,
 	//;                        Retime=>'NO' );
-	`$d_03->instantiate()` (
-					 .in(sample_R16S) , 
+	`$d_03_1->instantiate()` (
+					 .in(sample1_R16S) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out(sample_RnnS));				 
+				     .out(sample1_RnnS));
+
+	//; my $d_03_2 = generate( 'dff2', "d_03_2", 
+	//;                        BitWidth=>$sig_fig,
+	//;                        ArraySize1=>2,
+	//;                        PipelineDepth=>$pipe_depth,
+	//;                        Retime=>'NO' );
+	`$d_03_2->instantiate()` (
+					 .in(sample2_R16S) , 
+				     .clk(clk) , .reset(rst), .en(1'b1),
+				     .out(sample2_RnnS));				 
 					 						
 	//; my $d_04 = generate( 'dff', "d_04", 
-	//;                        BitWidth=>2,
+	//;                        BitWidth=>3,
 	//;                        PipelineDepth=>$pipe_depth,
 	//;                        Retime=>'NO' );
 	
 	`$d_04->instantiate()` (
-					 .in({validSamp_R16H, isQuad_R16H}) , 
+					 .in({validSamp1_R16H, validSamp2_R16H, isQuad_R16H}) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({validSamp_RnnH, isQuad_RnnH}));	        
+				     .out({validSamp1_RnnH, validSamp2_RnnH, isQuad_RnnH}));	        
 					 
 		
 
@@ -141,8 +157,10 @@ module `mname()`
    endproperty
 
    //Check that signals should match
-   assert property( sig_eq_con( rst, sample_RnnS[0] , hit_R18S[0]  , 1'b1 )); //will change to something else
-   assert property( sig_eq_con( rst, sample_RnnS[1] , hit_R18S[1]  , 1'b1 )); //will change to something else
+   assert property( sig_eq_con( rst, sample1_RnnS[0] , hit1_R18S[0]  , 1'b1 )); //will change to something else
+   assert property( sig_eq_con( rst, sample1_RnnS[1] , hit1_R18S[1]  , 1'b1 )); //will change to something else
+   assert property( sig_eq_con( rst, sample2_RnnS[0] , hit2_R18S[0]  , 1'b1 )); //will change to something else
+   assert property( sig_eq_con( rst, sample2_RnnS[1] , hit2_R18S[1]  , 1'b1 )); //will change to something else
    assert property( sig_eq_con( rst, color_RnnU[0]  , color_R18U[0]  , 1'b1 )); //Should Match
    assert property( sig_eq_con( rst, color_RnnU[1]  , color_R18U[1]  , 1'b1 ));
    assert property( sig_eq_con( rst, color_RnnU[2]  , color_R18U[2]  , 1'b1 ));
@@ -163,7 +181,7 @@ module `mname()`
 
 	 @(posedge clk);
 	 
-	 if( validSamp_RnnH ) begin
+	 if( validSamp1_RnnH  || validSamp2_RnnH) begin
 	    // Needs to be parameterized based on vertex and `$axis` -TODO JB
 	    
 	    $fwrite( file , "@%0t:\n\t\t" , $time );
@@ -183,12 +201,22 @@ module `mname()`
 
 	    $fwrite( file , "\n\t\t" );
 
-	    $fwrite( file , "sample.x:%f\t",  `unFix('hit_R18S[0]', $radix)`  );
-	    $fwrite( file , "sample.y:%f\t",  `unFix('hit_R18S[1]', $radix)`  );
+	    if (validSamp1_RnnH) begin
+	    $fwrite( file , "sample.x:%f\t",  `unFix('hit1_R18S[0]', $radix)`  );
+	    $fwrite( file , "sample.y:%f\t",  `unFix('hit1_R18S[1]', $radix)`  );
 	    $fwrite( file , "color.R:%f\t",   `unFix('color_RnnU[0]', $radix)` );
  	    $fwrite( file , "color.G:%f\t",   `unFix('color_RnnU[1]', $radix)` );
 	    $fwrite( file , "color.B:%f\t",   `unFix('color_RnnU[2]', $radix)` );
-	    $fwrite( file , "hit:%b\n" , hit_valid_R18H );
+	    $fwrite( file , "hit:%b\n" , hit_valid1_R18H );
+	    end //validSamp1_RnnH
+	    if (validSamp2_RnnH) begin
+	    $fwrite( file , "sample.x:%f\t",  `unFix('hit2_R18S[0]', $radix)`  );
+	    $fwrite( file , "sample.y:%f\t",  `unFix('hit2_R18S[1]', $radix)`  );
+	    $fwrite( file , "color.R:%f\t",   `unFix('color_RnnU[0]', $radix)` );
+ 	    $fwrite( file , "color.G:%f\t",   `unFix('color_RnnU[1]', $radix)` );
+	    $fwrite( file , "color.B:%f\t",   `unFix('color_RnnU[2]', $radix)` );
+	    $fwrite( file , "hit:%b\n" , hit_valid2_R18H );
+	    end //validSamp1_RnnH
 	    	    
 	 end else begin // if ( validPoly_R10H )
 	    $fwrite( file , "@%0t: Invalid Sample \n" , $time );

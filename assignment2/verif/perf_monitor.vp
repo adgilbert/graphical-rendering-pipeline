@@ -56,8 +56,10 @@ module `mname()`
   input logic signed   [`$sig_fig`-1:0]  poly_R16S[`$verts`-1:0][`$axis`-1:0],  // 4 Sets X,Y Fixed Point Values
   input logic unsigned [`$sig_fig`-1:0]  color_R16U[`$colors`-1:0],          // 4 Sets X,Y Fixed Point Values
   input logic                        isQuad_R16H,                     // Is Poly Quad?
-  input logic                        validSamp_R16H,
-  input logic signed   [`$sig_fig`-1:0]  sample_R16S[1:0],
+  input logic                        validSamp1_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample1_R16S[1:0],
+  input logic                        validSamp2_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample2_R16S[1:0],
 			 
   input logic                        clk,                // Clock 
   input logic                        rst,                // Reset
@@ -73,11 +75,9 @@ module `mname()`
    logic signed   [`$sig_fig`-1:0]  poly_RnnS[`$verts`-1:0][`$axis`-1:0];    // 4 Sets X,Y Fixed Point Values
    logic signed   [`$sig_fig`-1:0]  poly_Rn1S[`$verts`-1:0][`$axis`-1:0];    // 4 Sets X,Y Fixed Point Values
    logic 		        isQuad_RnnH;                       // Is Poly Quad?
-   logic 		        validSamp_RnnH;
-   logic 				hit_valid_R18H;
 
    // helper
-   assign hit_valid_R18H = hit_valid1_R18H | hit_valid2_R18H;
+   // assign hit_valid_R18H = hit_valid1_R18H | hit_valid2_R18H;
    //Pipe Signals for Later Evaluation
 
  
@@ -110,9 +110,9 @@ module `mname()`
 	//;                        Retime=>'NO' );
 	
 	`$d_04->instantiate()` (
-					 .in({validSamp_R16H, isQuad_R16H}) , 
+					 .in({validSamp1_R16H, validSamp2_R16H, isQuad_R16H}) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({validSamp_RnnH, isQuad_RnnH}));	        
+				     .out({validSamp1_RnnH, validSamp2_RnnH, isQuad_RnnH}));	        
 					 
   
 
@@ -125,7 +125,11 @@ module `mname()`
    initial begin
 
       sample_count = 0;
+      sample_count1 = 0;
+      sample_count2 = 0;
       sample_hit_count = 0;
+      sample_hit_count1 = 0;
+      sample_hit_count2 = 0;
       micropolygon_count = 0;
       cycle_count = 0 ;
 
@@ -137,10 +141,15 @@ module `mname()`
       while(1) begin
 	 @(posedge clk);
 
-	 sample_count = validSamp_RnnH ? (sample_count + 1) : sample_count;
+	 sample_count1 = validSamp1_RnnH ? (sample_count1 + 1) : sample_count1;
+	 sample_count2 = validSamp2_RnnH ? (sample_count2 + 1) : sample_count2;
+	 sample_count = sample_count1 + sample_count2;
 	 
-	 sample_hit_count = ( validSamp_RnnH && hit_valid_R18H ) ? 
-			    ( sample_hit_count + 1 ) : sample_hit_count;
+	 sample_hit_count1 = ( validSamp1_RnnH && hit_valid1_R18H ) ? 
+			    ( sample_hit_count1 + 1 ) : sample_hit_count1;
+	 sample_hit_count2 = ( validSamp2_RnnH && hit_valid2_R18H ) ? 
+			    ( sample_hit_count2 + 1 ) : sample_hit_count2;
+	 sample_hit_count = sample_hit_count1 + sample_hit_count2;
 	 
 	 micropolygon_count = ( poly_Rn1S != poly_RnnS ) ?
 			      ( micropolygon_count + 1 ) : micropolygon_count;
