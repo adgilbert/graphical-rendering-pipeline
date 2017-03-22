@@ -113,11 +113,11 @@ int rastBBox_bbox_check( int   v0_x,     //uPoly
 
   int center_x = (int) ll_x + ((ur_x-ll_x) >> 1); // get center of x
   int center_y = (int) ll_y + ((ur_y-ll_y) >> 1); // get center of y
-  //int center_x2 = (int) check_ll_x + ((check_ur_x-check_ll_x) >> 1); // get center of x
-  //int center_y2 = (int)  check_ll_y + ((check_ur_y-check_ll_y) >> 1); // get center of y
- //if (center_x != center_x2)  {
- // printf("CENTERS DIFFER");
-//}
+  int center_x2 = (int) check_ll_x + ((check_ur_x-check_ll_x) >> 1); // get center of x
+  int center_y2 = (int)  check_ll_y + ((check_ur_y-check_ll_y) >> 1); // get center of y
+ if (center_x != center_x2)  {
+  printf("CENTERS DIFFER");
+}
 /*
   valid = 1 ;
   valid = ur_x < 0 ? 0 : valid ;

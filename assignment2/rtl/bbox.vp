@@ -319,7 +319,8 @@ end
    logic is_backfaced;
 
    always_comb begin
-      is_backfaced = (poly_R10S[1][0] - poly_R10S[0][0]) * (poly_R10S[2][1] - poly_R10S[1][1]) - (poly_R10S[2][0] - poly_R10S[1][0]) * (poly_R10S[1][1] - poly_R10S[0][1]) > 0;
+    //  is_backfaced = 0;
+     is_backfaced = (poly_R10S[1][0] - poly_R10S[0][0]) * (poly_R10S[2][1] - poly_R10S[1][1]) - (poly_R10S[2][0] - poly_R10S[1][0]) * (poly_R10S[1][1] - poly_R10S[0][1]) > 0;
    end
 
 

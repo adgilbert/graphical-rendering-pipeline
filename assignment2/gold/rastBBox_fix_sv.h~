@@ -80,23 +80,6 @@ int rastBBox_stest_check( int   v0_x,      //uPoly
 			  int   s_x,       //SAMPLE 
 			  int   s_y,       //SAMPLE
 			  int   hit        //HIT
-			  );  
-
-//Given a uPoly and a sample location check whether sample hit or not.
-// used by bbox
-// Return 0 if backface (cull)
-// Return 1 if frontface (dont cull)
-int rastBBox_stest( int   v0_x,      //uPoly
-			  int   v0_y,      //uPoly
-			  int   v1_x,      //uPoly
-			  int   v1_y,      //uPoly
-			  int   v2_x,      //uPoly
-			  int   v2_y,      //uPoly
-			  int   v3_x,      //uPoly
-			  int   v3_y,      //uPoly
-			  int   q,         //uPoly
-			  int   s_x,       //SAMPLE 
-			  int   s_y       //SAMPLE
 			  );   
 
 
@@ -163,4 +146,3 @@ int rastBBox_jhash_jit_fix_check(
 			      int jitter_y,
 			      int s_j_x,
 			      int s_j_y );
-
