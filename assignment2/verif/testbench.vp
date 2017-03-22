@@ -154,8 +154,8 @@ module `mname()`
      .hit1_R18S(hit1_R18S),             //Sample Location and depth
      .hit2_R18S(hit2_R18S),             //Sample Location and depth
       .color_R18U(color_R18U),         //Color of Sample Hit
-      .hit1_valid_R18H(hit_valid1_R18H),  //Is sample hit valid
-      .hit2_valid_R18H(hit_valid2_R18H)  //Is sample hit valid
+      .hit_valid1_R18H(hit_valid1_R18H),  //Is sample hit valid
+      .hit_valid2_R18H(hit_valid2_R18H)  //Is sample hit valid
       );
 
    
@@ -231,8 +231,8 @@ module `mname()`
 	 		 .poly_R16S(`$dut_obj->get_instance_path()`.poly_R16S),           // 4 Sets X,Y Fixed Point Values
 			 .color_R16U(`$dut_obj->get_instance_path()`.color_R16U),         // Polygon Color
 			 .isQuad_R16H(`$dut_obj->get_instance_path()`.isQuad_R16H),       // Is Poly Quad?
-		 	 .validSamp_R16H(`$dut_obj->get_instance_path()`.validSamp_R16H), 
-			 .sample_R16S(`$dut_obj->get_instance_path()`.sample_R16S),       // Will change for JIT -todo
+		 	 .validSamp_R16H(`$dut_obj->get_instance_path()`.validSamp1_R16H), 
+			 .sample_R16S(`$dut_obj->get_instance_path()`.sample1_R16S),       // Will change for JIT -todo
 			      
   			 .clk(clk),                // Clock 
  			 .rst(rst),                // Reset
@@ -246,12 +246,12 @@ module `mname()`
 		 	 .screen_RnnnnS(screen_RnnnnS),         // Screen Size
 	                 .subSample_RnnnnU(subSample_RnnnnU),    // Flag for subsample
 							   
-			 .s_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_R14S[0]) ,
-                         .s_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_R14S[1]) ,
-                         .jitter_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val_R14H[0]) ,
-                         .jitter_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val_R14H[1]) ,  
-			 .s_j_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted_R14S[0]),
-			 .s_j_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted_R14S[1])
+			 .s_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample1_R14S[0]) ,
+                         .s_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample1_R14S[1]) ,
+                         .jitter_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val1_R14H[0]) ,
+                         .jitter_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.jitt_val1_R14H[1]) ,  
+			 .s_j_x_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted1_R14S[0]),
+			 .s_j_y_RnnS(`$dut_obj->get_instance_path()`.hash_jtree.sample_jitted1_R14S[1])
 
 			 );
 			 
@@ -282,7 +282,7 @@ module `mname()`
 			 .hit1_R18S(hit1_R18S),
 			 .hit2_R18S(hit2_R18S),
 			 .color_R18U(`$dut_obj->get_instance_path()`.color_R18U),         // Polygon Color			      
-			 .hit_valid1_R18H(hit_valid1_R18H) 
+			 .hit_valid1_R18H(hit_valid1_R18H), 
 			 .hit_valid2_R18H(hit_valid2_R18H) 
 									   );
 									   
