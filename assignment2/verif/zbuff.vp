@@ -140,6 +140,9 @@ module `mname()`
    logic unsigned [`$ss_l2`-1:0]  y_ss_ind2;
    logic unsigned [`$sig_fig`-1:0] depth2;
    logic unsigned [`$sig_fig`-1:0] color[`$colors`-1:0];
+   logic signed   [`$sig_fig`-1:0] hit_R18S[`$axis`-1:0];
+
+   assign hit_R18S = hit_valid1_R18H ? hit1_R18S : hit2_R18S; // if 1 hit then 1 otherwise just use 2
 
    int unsigned     x_max ;
    int unsigned     y_max ;
