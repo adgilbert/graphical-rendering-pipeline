@@ -234,6 +234,7 @@ module `mname()`
 			color[1] , //actually a ushort
 			color[2]  //actually a ushort
 		) ;
+		end // if 1
 		if( (hit_valid1_R18H) && ~rst ) begin
 	    zbuff_rop(  x_ind2 ,   //Hit Loc. X
 			y_ind2 ,   //Hit Loc. Y
@@ -244,8 +245,8 @@ module `mname()`
 			color[1] , //actually a ushort
 			color[2]  //actually a ushort
 		) ;
-	 end			   
-   end
+	 end // if 2			   
+   end // always
      
 
    task init_buffers;
