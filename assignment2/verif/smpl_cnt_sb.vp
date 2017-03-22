@@ -133,8 +133,6 @@ module `mname()`
    logic signed   [`$sig_fig`-1:0]  sample1_RnnS[1:0];             //
    logic 		        validSamp2_RnnH;
    logic signed   [`$sig_fig`-1:0]  sample2_RnnS[1:0]; 
-   logic 				hit_valid1_R18H;
-   logic 				hit_valid2_R18H;
    //Pipe Signals for Later Evaluation
 
    //Helper Signals
@@ -153,6 +151,7 @@ module `mname()`
    logic keep;
    logic reset_to_zero;
    logic reset_to_one;
+   logic reset_to_two;
    //Bench Logic
 
      
@@ -202,7 +201,7 @@ module `mname()`
    //Check that the Number of Hits is Correct
    always @( posedge clk ) begin
       #10;
-      if( reset_to_zero && validSamp_RnnH ) begin
+      if( reset_to_zero && (validSamp1_RnnH || validSamp2_RnnH)) begin
 	 if( one != rastBBox_check( 
 			int'(poly_RnnS[0][0]),   //uPoly
 			int'(poly_RnnS[0][1]),   //uPoly

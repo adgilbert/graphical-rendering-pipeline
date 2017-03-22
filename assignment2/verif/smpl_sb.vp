@@ -131,7 +131,7 @@ module `mname()`
    //Check if Sample in uPoly test is correct
    always @(posedge clk) begin
       #100;
-       if(validSamp_RnnH 
+       if(validSamp1_RnnH 
 	   &&
 	   one !=  rastBBox_stest_check( int'(poly_RnnS[0][0]), //uPoly
 				         int'(poly_RnnS[0][1]), //uPoly
@@ -145,7 +145,35 @@ module `mname()`
 					 int'(sample1_RnnS[0]) , //SAMPLE 
 					 int'(sample1_RnnS[1]) , //SAMPLE
 					 int'(hit_valid1_R18H)   //IS HIT
-				      )
+				      )) begin
+
+	    $fwrite( file , "@%0t: Sample Test ERROR!!!!\n\t\t" , $time );
+	    $fwrite( file , "uP.v_0.x: %f\t" , `unFix('poly_RnnS[0][0]', $radix)`   );
+	    $fwrite( file , "uP.v_0.y: %f\t" , `unFix('poly_RnnS[0][1]', $radix)`   );
+	    $fwrite( file , "uP.v_1.x: %f\t" , `unFix('poly_RnnS[1][0]', $radix)`   );
+	    $fwrite( file , "uP.v_1.y: %f\t" , `unFix('poly_RnnS[1][1]', $radix)`   );
+
+		 $fwrite( file , "\n\t\t" );		 
+	    $fwrite( file , "uP.v_2.x: %f\t" , `unFix('poly_RnnS[2][0]', $radix)`   );
+	    $fwrite( file , "uP.v_2.y: %f\t" , `unFix('poly_RnnS[2][1]', $radix)`   );
+	    
+	    if( isQuad_RnnH ) begin
+	       $fwrite( file , "uP.v_3.x: %f\t" , `unFix("poly_RnnS[$verts-1][0]", $radix)`   );
+	       $fwrite( file , "uP.v_3.y: %f\t" , `unFix("poly_RnnS[$verts-1][1]", $radix)`   );
+	    end
+
+	    $fwrite( file , "\n\t\t" );
+
+	    $fwrite( file , "sample.x:%f\t",  `unFix('sample1_RnnS[0]', $radix)`   );
+	    $fwrite( file , "sample.y:%f\t",  `unFix('sample1_RnnS[1]', $radix)`   );
+	    $fwrite( file , "hit:%b\n" , hit_valid1_R18H );
+
+	  
+	  assert( 0 ) else $error( "time=%10t ERROR: Sample Test Check Failed", $time );
+       end
+
+
+       if(validSamp2_RnnH 
 	   &&
 	   one !=  rastBBox_stest_check( int'(poly_RnnS[0][0]), //uPoly
 				         int'(poly_RnnS[0][1]), //uPoly
@@ -178,9 +206,9 @@ module `mname()`
 
 	    $fwrite( file , "\n\t\t" );
 
-	    $fwrite( file , "sample.x:%f\t",  `unFix('sample_RnnS[0]', $radix)`   );
-	    $fwrite( file , "sample.y:%f\t",  `unFix('sample_RnnS[1]', $radix)`   );
-	    $fwrite( file , "hit:%b\n" , hit_valid_R18H );
+	    $fwrite( file , "sample.x:%f\t",  `unFix('sample2_RnnS[0]', $radix)`   );
+	    $fwrite( file , "sample.y:%f\t",  `unFix('sample2_RnnS[1]', $radix)`   );
+	    $fwrite( file , "hit:%b\n" , hit_valid2_R18H );
 
 	  
 	  assert( 0 ) else $error( "time=%10t ERROR: Sample Test Check Failed", $time );

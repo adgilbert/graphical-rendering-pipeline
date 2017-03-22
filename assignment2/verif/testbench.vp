@@ -294,7 +294,7 @@ module `mname()`
 			 .hit1_R18S(hit1_R18S),
 			 .hit2_R18S(hit2_R18S),
 			 .color_R18U(`$dut_obj->get_instance_path()`.color_R18U),         // Polygon Color			      
-			 .hit_valid1_R18H(hit_valid1_R18H) 
+			 .hit_valid1_R18H(hit_valid1_R18H) ,
 			 .hit_valid2_R18H(hit_valid2_R18H) 
 									   );
 									   
