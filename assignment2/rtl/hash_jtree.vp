@@ -252,24 +252,10 @@ module `mname()`
 				     .out(color_R16U_retime));
 					 
 	//; my $d_hash_r3_1 = generate( 'dff2', "d_hash_r3_1", 
-<<<<<<< HEAD
-=======
 	//;                        BitWidth=>$sig_fig,
 	//;                        ArraySize1=>2,
 	//;                        PipelineDepth=>$pipe_depth-1,
 	//;                        Retime=>'YES' );
-	`$d_hash_r3_1->instantiate()` (
-					 .in(sample_jitted1_R14S) , 
-				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out(sample1_R16S_retime));	
-
-	//; my $d_hash_r3_2 = generate( 'dff2', "d_hash_r3_2", 
->>>>>>> 3e21170f38415f4e177a9c6c7d908ceb88654e59
-	//;                        BitWidth=>$sig_fig,
-	//;                        ArraySize1=>2,
-	//;                        PipelineDepth=>$pipe_depth-1,
-	//;                        Retime=>'YES' );
-<<<<<<< HEAD
 	`$d_hash_r3_1->instantiate()` (
 					 .in(sample_jitted1_R14S) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
@@ -283,11 +269,6 @@ module `mname()`
 	`$d_hash_r3_2->instantiate()` (
 					 .in(sample_jitted2_R14S) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-=======
-	`$d_hash_r3_2->instantiate()` (
-					 .in(sample_jitted2_R14S) , 
-				     .clk(clk) , .reset(rst), .en(1'b1),
->>>>>>> 3e21170f38415f4e177a9c6c7d908ceb88654e59
 				     .out(sample2_R16S_retime));	
 					 
 	//; my $d_hash_r4 = generate( 'dff', "d_hash_r4", 
@@ -326,28 +307,10 @@ module `mname()`
 				     .out(color_R16U));
 					 
 	//; my $d_hash_f3_1 = generate( 'dff2', "d_hash_f3_1", 
-<<<<<<< HEAD
 	//;                        BitWidth=>$sig_fig,
 	//;                        ArraySize1=>2,
 	//;                        PipelineDepth=>1,
 	//;                        Retime=>'NO' );
-	`$d_hash_f3_1->instantiate()` (
-					 .in(sample1_R16S_retime) , 
-				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out(sample1_R16S));
-
-	//; my $d_hash_f3_2 = generate( 'dff2', "d_hash_f3_2", 
-=======
->>>>>>> 3e21170f38415f4e177a9c6c7d908ceb88654e59
-	//;                        BitWidth=>$sig_fig,
-	//;                        ArraySize1=>2,
-	//;                        PipelineDepth=>1,
-	//;                        Retime=>'NO' );
-<<<<<<< HEAD
-	`$d_hash_f3_2 ->instantiate()` (
-					 .in(sample2_R16S_retime) , 
-				     .clk(clk) , .reset(rst), .en(1'b1),
-=======
 	`$d_hash_f3_1->instantiate()` (
 					 .in(sample1_R16S_retime) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
@@ -361,7 +324,6 @@ module `mname()`
 	`$d_hash_f3_2 ->instantiate()` (
 					 .in(sample2_R16S_retime) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
->>>>>>> 3e21170f38415f4e177a9c6c7d908ceb88654e59
 				     .out(sample2_R16S));	
 					 
 	//; my $d_hash_f4 = generate( 'dff', "d_hash_f4", 
@@ -380,4 +342,3 @@ endmodule
 
 
    
-
