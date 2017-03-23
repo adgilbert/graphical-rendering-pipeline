@@ -172,23 +172,24 @@ module `mname()`
    always @( posedge clk ) begin
       #10;
       if( ~rst ) begin
-	 if( (one != rastBBox_jhash_jit_fix_check( 
+      int check_hash1 = rastBBox_jhash_jit_fix_check( 
 					   s_x1_RnnS ,
 					   s_y1_RnnS ,
 					   ss_w_lg2 ,
 					   int'( { 24'h000000 , jitter_x1_RnnS} ) ,
 					   int'( { 24'h000000 , jitter_y1_RnnS} ) ,
 					   s_j_x1_RnnS,
-					   s_j_y1_RnnS	  )) 
-		|| (one != rastBBox_jhash_jit_fix_check( 
+					   s_j_y1_RnnS	  );
+	  int check_hash2  = rastBBox_jhash_jit_fix_check( 
 					   s_x2_RnnS ,
 					   s_y2_RnnS ,
 					   ss_w_lg2 ,
 					   int'( { 24'h000000 , jitter_x2_RnnS} ) ,
 					   int'( { 24'h000000 , jitter_y2_RnnS} ) ,
 					   s_j_x2_RnnS,
-					   s_j_y2_RnnS	  ) )) begin
-	    assert( 0 ) else $error( "time=%10t ERROR: Hash Check in Rast Failed", $time) ;
+					   s_j_y2_RnnS	  ) ;
+	 if (one != check_hash1 || one != check_hash2) begin
+	    assert( 0 ) else $error( "time=%10t ERROR: Hash Check in Rast Failed. Hash1 = %d, Hash2 = %d", $time, check_hash1, check_hash2) ;
 	 end
       end
    end
@@ -356,3 +357,4 @@ module `mname()`
 					
       
 endmodule
+

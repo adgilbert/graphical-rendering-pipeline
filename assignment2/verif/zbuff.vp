@@ -140,9 +140,9 @@ module `mname()`
    logic unsigned [`$ss_l2`-1:0]  y_ss_ind2;
    logic unsigned [`$sig_fig`-1:0] depth2;
    logic unsigned [`$sig_fig`-1:0] color[`$colors`-1:0];
-   logic signed   [`$sig_fig`-1:0] hit_R18S[`$axis`-1:0];
+   // logic signed   [`$sig_fig`-1:0] hit_R18S[`$axis`-1:0];
 
-   assign hit_R18S = hit_valid1_R18H ? hit1_R18S : hit2_R18S; // if 1 hit then 1 otherwise just use 2
+   // assign hit_R18S = hit_valid1_R18H ? hit1_R18S : hit2_R18S; // if 1 hit then 1 otherwise just use 2
 
    int unsigned     x_max ;
    int unsigned     y_max ;
@@ -235,7 +235,7 @@ module `mname()`
 			color[2]  //actually a ushort
 		) ;
 		end // if 1
-		if( (hit_valid1_R18H) && ~rst ) begin
+		if( (hit_valid2_R18H) && ~rst ) begin
 	    zbuff_rop(  x_ind2 ,   //Hit Loc. X
 			y_ind2 ,   //Hit Loc. Y
 			x_ss_ind2 ,  //`$ss` Hit loc X
@@ -283,3 +283,4 @@ module `mname()`
 
    
 endmodule
+

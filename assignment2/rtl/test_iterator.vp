@@ -267,7 +267,7 @@ module `mname()`
    logic signed [`$sig_fig`-1:0] 	next_up_samp1_R14S[1:0]; //If jump up, next sample
    logic signed [`$sig_fig`-1:0] 	next_rt_samp1_R14S[1:0]; //If jump right, next sample
    logic 				at_right_edg1_R14H;      //Current sample at right edge of bbox?
-   // logic 				at_top_edg1_R14H;        //Current sample at top edge of bbox?
+   logic 				at_top_edg1_R14H;        //Current sample at top edge of bbox?
    logic 				at_end_box_R14H;        //Current sample at end of bbox?
 
    // define some helper signals for iterator 2
@@ -300,7 +300,7 @@ module `mname()`
     assign next_rt_samp1_R14S[1] = sample1_R14S[1];          // same y coordinate
     assign at_right_edg1_R14H = (next_rt_samp1_R14S[0] >= box_R14S[1][0]); // at box edge
     // assign at_top_edg1_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp1_R14S[1] >= (box_R14S[1][1] >> 1)+1) : (next_up_samp1_R14S[1] >= (box_R14S[1][1] >> 1)); // at top
-    
+    assign at_top_edg1_R14H = (next_up_samp1_R14S[1] >= box_R14S[1][1]);
 
 
     // assign at_end_box_R14H = (at_right_edg1_R14H && at_top_edg1_R14H); // at right and top
@@ -321,14 +321,8 @@ module `mname()`
                           sample2_R14S[0] == sample1_R14S[0] + delta))
                         || ((sample2_R14S[1] == sample1_R14S[1] + delta) &&
                             at_right_edg1_R14H);
+    // assign at_end_box_R14H = at_right_edg1_R14H && at_top_edg1_R14H; // for now just iterate twice over everything.
 
-//    $display ("at end box %d, sample_x_eq: %d, sample_y_eq: %d, sample_x_one_part: %d, sample_y_one_apart: %d, at_right_edge: %d, at_left_edg: %d",
-//              at_end_box_R14H,
-//              sample1_R14S[0] == sample2_R14S[0],
-//              sample1_R14S[1] == sample2_R14S[1],
-//              sample2_R14S[0] == (sample1_R14S[0] + delta),
-//              sample2_R14S[1] == (sample1_R14S[1] + delta),
-//              at_right_edg1_R14H, at_left_edg2_R14H);
 
    
    //////
@@ -342,7 +336,7 @@ module `mname()`
       unique case( state_R14H )
         ( WAIT_STATE ): begin
 	   next_sample1_R14S    = box_R13S[0]; // start with the lower left corner
-      next_sample1_R14S    = box_R13S[1]; // start with upper right corner
+     next_sample2_R14S    = box_R13S[1]; // start with upper right corner
 	   next_validSamp1_R14H = validPoly_R13H; // if valid input then set valid
       next_validSamp2_R14H = validPoly_R13H; // if valid input then set valid
 	   next_isQuad_R14H    = isQuad_R13H; 
@@ -444,6 +438,7 @@ module `mname()`
 
 
 endmodule
+
 
 
 

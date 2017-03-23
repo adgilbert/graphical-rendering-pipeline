@@ -276,9 +276,9 @@ module `mname()`
 	//;                        PipelineDepth=>$pipe_depth-1,
 	//;                        Retime=>'YES' );
 	`$d_hash_r4->instantiate()` (
-				     .in({validSamp1_R14H, validSamp1_R14H, isQuad_R14H}) , 
+				     .in({validSamp1_R14H, validSamp2_R14H, isQuad_R14H}) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({validSamp1_R16H_retime, validSamp1_R16H_retime, isQuad_R16H_retime}));		
+				     .out({validSamp1_R16H_retime, validSamp2_R16H_retime, isQuad_R16H_retime}));		
    //Flop R14 to R16_retime with retiming registers			
 
 
