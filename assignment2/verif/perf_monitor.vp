@@ -105,7 +105,7 @@ module `mname()`
 					 			 
 					 						
 	//; my $d_04 = generate( 'dff', "d_04", 
-	//;                        BitWidth=>2,
+	//;                        BitWidth=>3,
 	//;                        PipelineDepth=>$pipe_depth,
 	//;                        Retime=>'NO' );
 	
