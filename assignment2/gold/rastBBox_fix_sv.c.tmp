@@ -111,14 +111,9 @@ int rastBBox_bbox_check( int   v0_x,     //uPoly
   ll_x = ll_x < 0   ? 0   : ll_x ;
   ll_y = ll_y < 0   ? 0   : ll_y ;
 
-  int center_x = (int) ll_x + ((ur_x-ll_x) >> 1); // get center of x
-  int center_y = (int) ll_y + ((ur_y-ll_y) >> 1); // get center of y
-  //int center_x2 = (int) check_ll_x + ((check_ur_x-check_ll_x) >> 1); // get center of x
-  //int center_y2 = (int)  check_ll_y + ((check_ur_y-check_ll_y) >> 1); // get center of y
- //if (center_x != center_x2)  {
- // printf("CENTERS DIFFER");
-//}
-/*
+  center_x = (int) ll_x + ((ur_x-ll_x) >> 1); // get center of x
+  center_y = (int) ll_y + ((ur_y-ll_y) >> 1); // get center of y
+  /*
   valid = 1 ;
   valid = ur_x < 0 ? 0 : valid ;
   valid = ur_y < 0 ? 0 : valid ;
@@ -139,40 +134,21 @@ int rastBBox_bbox_check( int   v0_x,     //uPoly
         center_x,       //SAMPLE 
         center_y       //SAMPLE
         ); 
-
-   // if (!backface) {
-    //  printf("culled\n");
-     // printf("x coords:  %d %d %d \n", v0_x, v1_x, v2_x);
-      //printf("y coords:  %d %d %d \n", v0_y, v1_y, v2_y);
-      //printf("sample pt: %d %d \n", center_x, center_y);
-      //printf("valid: %d \n", valid);
-    //}
   //
   //Copy Past C++ Bounding Box Function ****END****
-  
+  //
 
-  //valid = (backface) ? valid : 0; // update valid signal for backface
   //Check if BBox matches
   correct = 1 ;
+  correct = backface ? correct : 0;
   correct = check_valid == valid ? correct : 0 ; 
   if( check_valid != valid ){
     printf( "\nerror: valid signal incorrect hw vs gold %i vs %i (valid_input=%i)\n" , check_valid , valid, valid_Poly);
-    printf( " backface: %d\nq: %d", backface, q);
-    //printf( "debug: ll_x  vs gold   %d vs %d\n" , ll_x ,check_ll_x);
-    //printf( "debug: ll_y  vs gold   %d vs %d\n" , ll_y ,check_ll_y);
-    //printf( "debug: ur_x  vs gold   %d vs %d\n" , ur_x ,check_ur_x);
-    //printf( "debug: ur_y  vs gold   %d vs %d\n" , ur_y ,check_ur_y);
+    // printf( "\debug: ll_x  vs gold   %d vs %d\n" , ll_x ,check_ll_x);
+    // printf( "\debug: ll_y  vs gold   %d vs %d\n" , ll_y ,check_ll_y);
+    // printf( "\debug: ur_x  vs gold   %d vs %d\n" , ur_x ,check_ur_x);
+    // printf( "\debug: ur_y  vs gold   %d vs %d\n" , ur_y ,check_ur_y);
   }
-
-//  if (correct && valid == 1) {
-//    if (backface == 0) {
-//     printf("BACKFACEB ERROR: Q: %d", q);
-//      printf("x coords:  %d %d %d \n", v0_x, v1_x, v2_x);
-//      printf("y coords:  %d %d %d \n", v0_y, v1_y, v2_y);
-//      printf("sample pt: %d %d \n", center_x, center_y);
-//      printf("valid: %d \n", valid);
-//}
-//}
 
   if( check_valid == valid && valid == 1 ){
 
@@ -384,7 +360,7 @@ int rastBBox_stest( int   v0_x,      //uPoly
   Qresult |= ( b4 ? 1 : 0) << 4;
 
   result =  q ? kQuadCullBackHits_fix[Qresult] : kTriCullBackHits_fix[Tresult]  ;
-  // printf(result);
+
   return result ;
 }
 

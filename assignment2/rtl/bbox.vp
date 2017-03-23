@@ -109,6 +109,10 @@
 //; my $pipe_depth = parameter(Name=>'PipelineDepth',
 //;                            Val=>3, Min=>1, Step=>1, 
 //;                            Doc=>"How many pipe stages are in this block");
+//; my $x = 0;
+//; my $y = 1;
+//; my $edges = ($verts == 3) ? 3 : 5 ;
+//; my $shortSF = $sig_fig;
 
 /* A Note on Signal Names:
  *
@@ -309,6 +313,31 @@ end
    // Invalid if BBox is down/left of Screen
    // outvalid_R10H high if validPoly_R10H && BBox is valid
 
+//-----------------------------------------------------------------------------------------------
+// Implementing backface culling in bbox.vp
+
+   logic is_backfaced;
+
+   always_comb begin
+    //  is_backfaced = 0;
+     is_backfaced = (poly_R10S[1][0] - poly_R10S[0][0]) * (poly_R10S[2][1] - poly_R10S[1][1]) - (poly_R10S[2][0] - poly_R10S[1][0]) * (poly_R10S[1][1] - poly_R10S[0][1]) > 0;
+   end
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------------
+   
+
    always_comb begin
 
       //////// PLACE YOUR CODE HERE
@@ -325,7 +354,7 @@ end
       outvalid_R10H = (rounded_box_R10S[0][1] < 0) ? 0 : outvalid_R10H;
       outvalid_R10H = (rounded_box_R10S[1][0] > screen_RnnnnS[0]) ? 0 : outvalid_R10H;
       outvalid_R10H = (rounded_box_R10S[1][1] > screen_RnnnnS[1]) ? 0 : outvalid_R10H;
-      outvalid_R10H = outvalid_R10H && validPoly_R10H;
+      outvalid_R10H = outvalid_R10H && validPoly_R10H && !is_backfaced;
 
    end
 
