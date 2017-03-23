@@ -298,9 +298,9 @@ module `mname()`
     assign next_up_samp1_R14S[1] = sample1_R14S[1] + delta;  // add delta
     assign next_rt_samp1_R14S[0] = sample1_R14S[0] + delta;  // add delta
     assign next_rt_samp1_R14S[1] = sample1_R14S[1];          // same y coordinate
-    assign at_right_edg1_R14H = (next_rt_samp1_R14S[0] >= box_R14S[1][0]); // at box edge
+    assign at_right_edg1_R14H = (next_rt_samp1_R14S[0] > box_R14S[1][0]); // at box edge
     // assign at_top_edg1_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp1_R14S[1] >= (box_R14S[1][1] >> 1)+1) : (next_up_samp1_R14S[1] >= (box_R14S[1][1] >> 1)); // at top
-    assign at_top_edg1_R14H = (next_up_samp1_R14S[1] >= box_R14S[1][1]);
+    assign at_top_edg1_R14H = (next_up_samp1_R14S[1] > box_R14S[1][1]);
 
 
     // assign at_end_box_R14H = (at_right_edg1_R14H && at_top_edg1_R14H); // at right and top
@@ -310,7 +310,7 @@ module `mname()`
     assign next_dn_samp2_R14S[1] = sample2_R14S[1] - delta;  // subtract delta
     assign next_lt_samp2_R14S[0] = sample2_R14S[0] - delta;  // subtract delta
     assign next_lt_samp2_R14S[1] = sample2_R14S[1];          // same y coordinate
-    assign at_left_edg2_R14H = (next_lt_samp2_R14S[0] <= box_R14S[0][0]); // at box edge
+    assign at_left_edg2_R14H = (next_lt_samp2_R14S[0] < box_R14S[0][0]); // at box edge
     // assign at_bot_edg2_R14H =  (box_R14S[1][1] & delta > 0) ? (next_up_samp1_R14S[1] > (box_R14S[1][1] >> 1)+1) : (next_up_samp1_R14S[1] > (box_R14S[1][1] >> 1)); // at top
     // assign at_bot_edg2_R14H = next_dn_samp2_R14S[1] < (next_box_R14S[1][1] >> 1);
     // assign at_end_box2_R14H = (at_left_edg2_R14H && at_bot_edg2_R14H); // at right and top
