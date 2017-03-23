@@ -118,7 +118,7 @@ module `mname()`
 
    int sample_count;
    int sample_count1;
-   int sample_hit_count2;
+   int sample_count2;
    int sample_hit_count;
    int sample_hit_count1;
    int sample_hit_count2; 
