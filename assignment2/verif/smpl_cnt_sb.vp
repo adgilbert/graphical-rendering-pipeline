@@ -89,26 +89,36 @@ module `mname()`
   input logic signed   [`$sig_fig`-1:0]  poly_R16S[`$verts`-1:0][`$axis`-1:0],  // 4 Sets X,Y Fixed Point Values
   input logic unsigned [`$sig_fig`-1:0]  color_R16U[`$colors`-1:0],          // 4 Sets X,Y Fixed Point Values
   input logic                        isQuad_R16H,                     // Is Poly Quad?
-  input logic                        validSamp_R16H,
-  input logic signed   [`$sig_fig`-1:0]  sample_R16S[1:0],
+  input logic                        validSamp1_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample1_R16S[1:0],
+  input logic                        validSamp2_R16H,
+  input logic signed   [`$sig_fig`-1:0]  sample2_R16S[1:0],
 			 
   input logic                        clk,                // Clock 
   input logic                        rst,                // Reset
 			 
-  input logic signed [`$sig_fig`-1:0]   hit_R18S[`$axis`-1:0],
+  input logic signed [`$sig_fig`-1:0]   hit1_R18S[`$axis`-1:0],
+  input logic signed [`$sig_fig`-1:0]   hit2_R18S[`$axis`-1:0],
   input logic signed [`$sig_fig`-1:0]   color_R18U[`$colors`-1:0],
-  input logic                       hit_valid_R18H,
+  input logic                       hit_valid1_R18H,
+  input logic                       hit_valid2_R18H,
 		   
   input logic        [`$sig_fig`-1:0]  screen_RnnnnS[1:0],      // Screen Size
   input logic  	     [3:0]         subSample_RnnnnU,    // Flag for subsample
 
 
-  input logic signed [`$sig_fig`-1:0]   s_x_RnnS ,
-  input logic signed [`$sig_fig`-1:0]   s_y_RnnS ,
-  input logic signed [7:0]    jitter_x_RnnS ,
-  input logic signed [7:0]    jitter_y_RnnS,
-  input logic signed [`$sig_fig`-1:0]   s_j_x_RnnS ,
-  input logic signed [`$sig_fig`-1:0]   s_j_y_RnnS 
+  input logic signed [`$sig_fig`-1:0]   s_x1_RnnS ,
+  input logic signed [`$sig_fig`-1:0]   s_y1_RnnS ,
+  input logic signed [7:0]    jitter_x1_RnnS ,
+  input logic signed [7:0]    jitter_y1_RnnS,
+  input logic signed [`$sig_fig`-1:0]   s_j_x1_RnnS ,
+  input logic signed [`$sig_fig`-1:0]   s_j_y1_RnnS ,
+  input logic signed [`$sig_fig`-1:0]   s_x2_RnnS ,
+  input logic signed [`$sig_fig`-1:0]   s_y2_RnnS ,
+  input logic signed [7:0]    jitter_x2_RnnS ,
+  input logic signed [7:0]    jitter_y2_RnnS,
+  input logic signed [`$sig_fig`-1:0]   s_j_x2_RnnS ,
+  input logic signed [`$sig_fig`-1:0]   s_j_y2_RnnS 
 		   
  );
 	
@@ -119,8 +129,10 @@ module `mname()`
    logic unsigned [`$sig_fig`-1:0]  color_RnnU[`$colors`-1:0];
    logic 		        isQuad_RnnH;                       // Is Poly Quad?
    logic 		        isQuad_Rn1H;                       // Is Poly Quad?
-   logic 		        validSamp_RnnH;
-   logic signed   [`$sig_fig`-1:0]  sample_RnnS[1:0];             //
+   logic 		        validSamp1_RnnH;
+   logic signed   [`$sig_fig`-1:0]  sample1_RnnS[1:0];             //
+   logic 		        validSamp2_RnnH;
+   logic signed   [`$sig_fig`-1:0]  sample2_RnnS[1:0]; 
    //Pipe Signals for Later Evaluation
 
    //Helper Signals
@@ -128,15 +140,18 @@ module `mname()`
    int 		       one;
    int 		       ss_w_lg2;
    assign one = 1 ;
+   // assign hit_valid_R18H = hit_valid1_R18H | hit_valid2_R18H;
    //Helper Signals
     
    //Bench Logic
    int   hit_count;
    int   hit_count_next;
    logic incr;
+   logic incr2;
    logic keep;
    logic reset_to_zero;
    logic reset_to_one;
+   logic reset_to_two;
    //Bench Logic
 
      
@@ -157,15 +172,24 @@ module `mname()`
    always @( posedge clk ) begin
       #10;
       if( ~rst ) begin
-	 if( one != rastBBox_jhash_jit_fix_check( 
-					   s_x_RnnS ,
-					   s_y_RnnS ,
+      int check_hash1 = rastBBox_jhash_jit_fix_check( 
+					   s_x1_RnnS ,
+					   s_y1_RnnS ,
 					   ss_w_lg2 ,
-					   int'( { 24'h000000 , jitter_x_RnnS} ) ,
-					   int'( { 24'h000000 , jitter_y_RnnS} ) ,
-					   s_j_x_RnnS,
-					   s_j_y_RnnS	  ) ) begin
-	    assert( 0 ) else $error( "time=%10t ERROR: Hash Check in Rast Failed", $time) ;
+					   int'( { 24'h000000 , jitter_x1_RnnS} ) ,
+					   int'( { 24'h000000 , jitter_y1_RnnS} ) ,
+					   s_j_x1_RnnS,
+					   s_j_y1_RnnS	  );
+	  int check_hash2  = rastBBox_jhash_jit_fix_check( 
+					   s_x2_RnnS ,
+					   s_y2_RnnS ,
+					   ss_w_lg2 ,
+					   int'( { 24'h000000 , jitter_x2_RnnS} ) ,
+					   int'( { 24'h000000 , jitter_y2_RnnS} ) ,
+					   s_j_x2_RnnS,
+					   s_j_y2_RnnS	  ) ;
+	 if (one != check_hash1 || one != check_hash2) begin
+	    assert( 0 ) else $error( "time=%10t ERROR: Hash Check in Rast Failed. Hash1 = %d, Hash2 = %d", $time, check_hash1, check_hash2) ;
 	 end
       end
    end
@@ -178,7 +202,7 @@ module `mname()`
    //Check that the Number of Hits is Correct
    always @( posedge clk ) begin
       #10;
-      if( reset_to_zero && validSamp_RnnH ) begin
+      if( reset_to_zero && (validSamp1_RnnH || validSamp2_RnnH)) begin
 	 if( one != rastBBox_check( 
 			int'(poly_RnnS[0][0]),   //uPoly
 			int'(poly_RnnS[0][1]),   //uPoly
@@ -194,7 +218,7 @@ module `mname()`
 			int'(screen_RnnnnS[0] ), //Screen
 			int'(screen_RnnnnS[1] ), //Screen
 			`$radix`,                   //Config
-			int'( 128'd1 << `$radix` )  //Congig 
+			int'( 128'd1 << `$radix` )  //Config 
 			)) begin
 
 
@@ -237,13 +261,17 @@ module `mname()`
    always_comb begin
    
       reset_to_zero = (poly_Rn1S != poly_RnnS) ; //New Poly
-      reset_to_one = reset_to_zero && hit_valid_R18H ; //New Poly with hit
-      incr = hit_valid_R18H ;
-      keep = ~hit_valid_R18H ;
+      reset_to_one = reset_to_zero && (hit_valid1_R18H || hit_valid2_R18H) ; //New Poly with hit
+      reset_to_two = reset_to_zero && (hit_valid1_R18H && hit_valid2_R18H) ;
+      incr = (hit_valid1_R18H || hit_valid2_R18H);
+      incr2 = (hit_valid1_R18H && hit_valid2_R18H);
+      keep = ~hit_valid1_R18H && ~hit_valid2_R18H;
     
       priority case( 1'b1 )
+    (reset_to_two): hit_count_next = 2;
 	(reset_to_one): hit_count_next = 1;
 	(reset_to_zero): hit_count_next = 0;
+	(incr2): hit_count_next = hit_count + 2;
 	(incr): hit_count_next = hit_count + 1 ;
 	(keep): hit_count_next = hit_count ;
 	default: hit_count_next = 0;
@@ -286,25 +314,35 @@ module `mname()`
 				     .clk(clk) , .reset(rst), .en(1'b1),
 				     .out(color_RnnU));
 	
-	//; my $d_03 = generate( 'dff2', "d_03", 
+	//; my $d_03_01 = generate( 'dff2', "d_03_01", 
 	//;                        BitWidth=>$sig_fig,
 	//;                        ArraySize1=>2,
 	//;                        PipelineDepth=>$pipe_depth,
 	//;                        Retime=>'NO' );
-	`$d_03->instantiate()` (
-					 .in(sample_R16S) , 
+	`$d_03_01->instantiate()` (
+					 .in(sample1_R16S) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out(sample_RnnS));				 
+				     .out(sample1_RnnS));
+
+	//; my $d_03_02 = generate( 'dff2', "d_03_02", 
+	//;                        BitWidth=>$sig_fig,
+	//;                        ArraySize1=>2,
+	//;                        PipelineDepth=>$pipe_depth,
+	//;                        Retime=>'NO' );
+	`$d_03_02->instantiate()` (
+					 .in(sample2_R16S) , 
+				     .clk(clk) , .reset(rst), .en(1'b1),
+				     .out(sample2_RnnS));				 
 					 						
 	//; my $d_04 = generate( 'dff', "d_04", 
-	//;                        BitWidth=>2,
+	//;                        BitWidth=>3,
 	//;                        PipelineDepth=>$pipe_depth,
 	//;                        Retime=>'NO' );
 	
 	`$d_04->instantiate()` (
-					 .in({validSamp_R16H, isQuad_R16H}) , 
+					 .in({validSamp1_R16H, validSamp2_R16H, isQuad_R16H}) , 
 				     .clk(clk) , .reset(rst), .en(1'b1),
-				     .out({validSamp_RnnH, isQuad_RnnH}));	
+				     .out({validSamp1_RnnH, validSamp2_RnnH, isQuad_RnnH}));	
 
 
 	//; my $d_041 = generate( 'dff', "d_041", 
@@ -319,3 +357,4 @@ module `mname()`
 					
       
 endmodule
+

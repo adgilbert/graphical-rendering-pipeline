@@ -52,8 +52,10 @@ module `mname()` (
    input signed [`$sig_fig`-1:0]   box_R13S[1:0][1:0],     // 2 Sets X,Y Fixed Point Values
    input signed [`$sig_fig`-1:0]   box_R14S[1:0][1:0],     // 2 Sets X,Y Fixed Point Values     
    input signed [`$sig_fig`-1:0]   poly_R14S[`$verts`-1:0][`$axis`-1:0],    // 4 Sets X,Y Fixed Point Values
-   input signed [`$sig_fig`-1:0]   sample_R14S[1:0],       //Sample Location to Be Tested
-   input                       validSamp_R14H,         // Valid Data for Operation
+   input signed [`$sig_fig`-1:0]   sample1_R14S[1:0],       //Sample Location to Be Tested
+   input                       validSamp1_R14H,         // Valid Data for Operation
+   input signed [`$sig_fig`-1:0]   sample2_R14S[1:0],       //Sample Location to Be Tested
+   input                       validSamp2_R14H,         // Valid Data for Operation
    input 		       isQuad_R14H,            // Is Poly Quad?
    input 		       clk ,                     // Clock 
    input 		       rst ,                     // Reset
@@ -77,7 +79,7 @@ module `mname()` (
 	 
 	 @(posedge clk);
 	 
-	 if( validSamp_R14H ) begin
+	 if( (validSamp1_R14H || validSamp2_R14H) ) begin
 	    $fwrite( file , "@%0t:\n\t\t" , $time );
 	    $fwrite( file , "uP.v_0.x: %f\t" , `unFix('poly_R14S[0][0]', $radix)`   );
 	    $fwrite( file , "uP.v_0.y: %f\t" , `unFix('poly_R14S[0][1]', $radix)`   );
@@ -111,8 +113,10 @@ module `mname()` (
 
 	    $fwrite( file , "\n\t\t" );
 
-	    $fwrite( file , "sample.x:%f\t",  `unFix('sample_R14S[0]', $radix)`   );
-	    $fwrite( file , "sample.y:%f\t",  `unFix('sample_R14S[1]', $radix)`   );
+	    $fwrite( file , "sample.x:%f\t",  `unFix('sample1_R14S[0]', $radix)`   );
+	    $fwrite( file , "sample.y:%f\t",  `unFix('sample1_R14S[1]', $radix)`   );
+	    $fwrite( file , "sample.x:%f\t",  `unFix('sample2_R14S[0]', $radix)`   );
+	    $fwrite( file , "sample.y:%f\t",  `unFix('sample2_R14S[1]', $radix)`   );
 	    
 	    $fwrite( file , "\n\t\t" );
 
