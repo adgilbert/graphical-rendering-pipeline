@@ -3,14 +3,14 @@
 Report : qor
 Design : rast
 Version: G-2012.06-SP5-1
-Date   : Sun Mar 19 17:26:23 2017
+Date   : Wed Mar 22 20:56:45 2017
 ****************************************
 
 
   Timing Path Group 'clk'
   -----------------------------------
-  Levels of Logic:              33.00
-  Critical Path Length:          0.79
+  Levels of Logic:              27.00
+  Critical Path Length:          0.80
   Critical Path Slack:           0.00
   Critical Path Clk Period:      0.80
   Total Negative Slack:          0.00
@@ -23,31 +23,31 @@ Date   : Sun Mar 19 17:26:23 2017
 
   Cell Count
   -----------------------------------
-  Hierarchical Cell Count:          0
-  Hierarchical Port Count:          0
-  Leaf Cell Count:               7989
-  Buf/Inv Cell Count:            2672
+  Hierarchical Cell Count:          1
+  Hierarchical Port Count:        731
+  Leaf Cell Count:              10842
+  Buf/Inv Cell Count:            3023
   CT Buf/Inv Cell Count:            0
-  Combinational Cell Count:      6199
-  Sequential Cell Count:         1790
+  Combinational Cell Count:      8919
+  Sequential Cell Count:         1923
   Macro Count:                      0
   -----------------------------------
 
 
   Area
   -----------------------------------
-  Combinational Area:     8680.820453
-  Noncombinational Area:  8360.654487
-  Buf/Inv Area:           1628.524850
+  Combinational Area:    12961.695632
+  Noncombinational Area:  9059.727707
+  Buf/Inv Area:           1659.218454
   Net Area:                  0.000000
   -----------------------------------
-  Cell Area:             17041.474940
-  Design Area:           17041.474940
+  Cell Area:             22021.423339
+  Design Area:           22021.423339
 
 
   Design Rules
   -----------------------------------
-  Total Number of Nets:          8863
+  Total Number of Nets:         12124
   Nets With Violations:            15
   Max Trans Violations:             0
   Max Cap Violations:              14
@@ -55,16 +55,16 @@ Date   : Sun Mar 19 17:26:23 2017
   -----------------------------------
 
 
-  Hostname: corn19.stanford.edu
+  Hostname: corn29.stanford.edu
 
   Compile CPU Statistics
   -----------------------------------------
-  Resource Sharing:                   20.85
-  Logic Optimization:                 11.88
-  Mapping Optimization:               33.69
+  Resource Sharing:                   30.75
+  Logic Optimization:                 25.54
+  Mapping Optimization:               47.70
   -----------------------------------------
-  Overall Compile Time:               81.35
-  Overall Compile Wall Clock Time:    84.21
+  Overall Compile Time:              120.11
+  Overall Compile Wall Clock Time:   126.06
 
   --------------------------------------------------------------------
 

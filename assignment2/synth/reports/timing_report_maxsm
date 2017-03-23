@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : rast
 Version: G-2012.06-SP5-1
-Date   : Sun Mar 19 17:26:23 2017
+Date   : Wed Mar 22 20:56:45 2017
 ****************************************
 
  # A fanout number of 1000 was used for high fanout net computations.
@@ -14,72 +14,66 @@ Date   : Sun Mar 19 17:26:23 2017
 Operating Conditions: MLCOM   Library: tcbn45gsbwpml
 Wire Load Model Mode: top
 
-  Startpoint: hash_jtree/d_hash_f3/dff_0/dff/data_pipe_a_reg[1][16]
+  Startpoint: hash_jtree/d_hash_f3/dff_1/dff/data_pipe_a_reg[1][18]
               (rising edge-triggered flip-flop clocked by clk)
-  Endpoint: sampletest/DP_OP_35J1_126_4838/clk_r_REG13_S11
+  Endpoint: sampletest/DP_OP_34J2_126_4838/clk_r_REG32_S11
             (rising edge-triggered flip-flop clocked by clk)
   Path Group: clk
   Path Type: max
 
   Des/Clust/Port     Wire Load Model       Library
   ------------------------------------------------
-  rast               TSMC16K_Lowk_Conservative
+  rast               TSMC32K_Lowk_Conservative
                                            tcbn45gsbwpml
 
   Point                                                   Incr       Path
   --------------------------------------------------------------------------
   clock clk (rise edge)                                 0.0000     0.0000
   clock network delay (ideal)                           0.0000     0.0000
-  hash_jtree/d_hash_f3/dff_0/dff/data_pipe_a_reg[1][16]/CP (DFCNQD1BWP)
+  hash_jtree/d_hash_f3/dff_1/dff/data_pipe_a_reg[1][18]/CP (DFCNQD1BWP)
                                                         0.0000 #   0.0000 r
-  hash_jtree/d_hash_f3/dff_0/dff/data_pipe_a_reg[1][16]/Q (DFCNQD1BWP)
-                                                        0.0462     0.0462 r
-  U1582/ZN (CKND3BWP)                                   0.0128     0.0590 f
-  U1178/ZN (NR2D2BWP)                                   0.0136     0.0726 r
-  U2303/ZN (OAI21D2BWP)                                 0.0141     0.0867 f
-  U2297/ZN (INVD1BWP)                                   0.0147     0.1014 r
-  sampletest/sub_x_2/U65/Z (CKXOR2D2BWP)                0.0499     0.1513 f
-  sampletest/DP_OP_35J1_126_4838/U802/ZN (XNR2D1BWP)    0.0361     0.1875 r
-  U971/ZN (OAI22D1BWP)                                  0.0151     0.2025 f
-  U970/CO (FA1D0BWP)                                    0.0539     0.2564 f
-  U2240/S (FA1D2BWP)                                    0.0266     0.2830 r
-  U2481/S (FA1D2BWP)                                    0.0441     0.3272 f
-  U2478/CO (FA1D2BWP)                                   0.0425     0.3697 f
-  U1895/CO (FA1D1BWP)                                   0.0214     0.3911 f
-  U2443/CO (FA1D2BWP)                                   0.0199     0.4110 f
-  U2442/CO (FA1D2BWP)                                   0.0198     0.4307 f
-  U2462/CO (FA1D2BWP)                                   0.0198     0.4505 f
-  U2450/CO (FA1D2BWP)                                   0.0198     0.4702 f
-  U2451/CO (FA1D2BWP)                                   0.0198     0.4900 f
-  U2453/CO (FA1D2BWP)                                   0.0198     0.5097 f
-  U2454/CO (FA1D2BWP)                                   0.0198     0.5295 f
-  U2446/CO (FA1D2BWP)                                   0.0198     0.5493 f
-  U2447/CO (FA1D2BWP)                                   0.0198     0.5690 f
-  U2440/CO (FA1D2BWP)                                   0.0198     0.5888 f
-  U2441/CO (FA1D2BWP)                                   0.0198     0.6085 f
-  U2439/CO (FA1D2BWP)                                   0.0198     0.6283 f
-  U2449/CO (FA1D2BWP)                                   0.0198     0.6480 f
-  U2448/CO (FA1D2BWP)                                   0.0198     0.6678 f
-  U2458/CO (FA1D2BWP)                                   0.0198     0.6875 f
-  U2459/CO (FA1D2BWP)                                   0.0198     0.7073 f
-  U2457/CO (FA1D2BWP)                                   0.0198     0.7270 f
-  U2463/CO (FA1D2BWP)                                   0.0198     0.7468 f
-  U2464/CO (FA1D2BWP)                                   0.0198     0.7666 f
-  U2465/CO (FA1D2BWP)                                   0.0196     0.7861 f
-  U2471/ZN (CKND2BWP)                                   0.0059     0.7920 r
-  sampletest/DP_OP_35J1_126_4838/clk_r_REG13_S11/D (DFCNQD1BWP)
-                                                        0.0000     0.7920 r
-  data arrival time                                                0.7920
+  hash_jtree/d_hash_f3/dff_1/dff/data_pipe_a_reg[1][18]/Q (DFCNQD1BWP)
+                                                        0.0450     0.0450 r
+  U977/ZN (CKND2BWP)                                    0.0137     0.0587 f
+  sampletest/sub_x_3/U71/ZN (NR2D1BWP)                  0.0244     0.0831 r
+  U1091/ZN (CKND0BWP)                                   0.0095     0.0926 f
+  sampletest/sub_x_3/U69/ZN (CKND2D1BWP)                0.0116     0.1042 r
+  U1524/Z (CKXOR2D1BWP)                                 0.0393     0.1435 f
+  U939/ZN (XNR2D4BWP)                                   0.0621     0.2056 r
+  U675/ZN (ND2D2BWP)                                    0.0567     0.2624 f
+  sampletest/DP_OP_34J2_126_4838/U645/ZN (OAI22D1BWP)   0.0266     0.2890 r
+  sampletest/DP_OP_34J2_126_4838/U211/CO (FA1D0BWP)     0.0555     0.3445 r
+  U1708/CO (FA1D2BWP)                                   0.0420     0.3864 r
+  sampletest/DP_OP_34J2_126_4838/U194/CO (FA1D0BWP)     0.0439     0.4303 r
+  sampletest/DP_OP_34J2_126_4838/U184/S (FA1D0BWP)      0.0490     0.4793 f
+  U1715/CO (FA1D2BWP)                                   0.0440     0.5232 f
+  U1697/CO (FA1D2BWP)                                   0.0198     0.5430 f
+  U1698/CO (FA1D2BWP)                                   0.0198     0.5628 f
+  U1705/CO (FA1D2BWP)                                   0.0198     0.5825 f
+  U1702/CO (FA1D2BWP)                                   0.0198     0.6023 f
+  U1703/CO (FA1D2BWP)                                   0.0198     0.6220 f
+  U1701/CO (FA1D2BWP)                                   0.0198     0.6418 f
+  U1706/CO (FA1D2BWP)                                   0.0198     0.6615 f
+  U1707/CO (FA1D2BWP)                                   0.0198     0.6813 f
+  U1711/CO (FA1D2BWP)                                   0.0198     0.7010 f
+  U1696/CO (FA1D2BWP)                                   0.0198     0.7208 f
+  U1709/CO (FA1D2BWP)                                   0.0198     0.7405 f
+  U1695/CO (FA1D2BWP)                                   0.0198     0.7603 f
+  U1699/CO (FA1D2BWP)                                   0.0198     0.7800 f
+  U1700/CO (FA1D2BWP)                                   0.0185     0.7985 f
+  sampletest/DP_OP_34J2_126_4838/clk_r_REG32_S11/D (DFCNQD1BWP)
+                                                        0.0000     0.7985 f
+  data arrival time                                                0.7985
 
   clock clk (rise edge)                                 0.8000     0.8000
   clock network delay (ideal)                           0.0000     0.8000
-  sampletest/DP_OP_35J1_126_4838/clk_r_REG13_S11/CP (DFCNQD1BWP)
+  sampletest/DP_OP_34J2_126_4838/clk_r_REG32_S11/CP (DFCNQD1BWP)
                                                         0.0000     0.8000 r
-  library setup time                                   -0.0080     0.7920
-  data required time                                               0.7920
+  library setup time                                   -0.0014     0.7986
+  data required time                                               0.7986
   --------------------------------------------------------------------------
-  data required time                                               0.7920
-  data arrival time                                               -0.7920
+  data required time                                               0.7986
+  data arrival time                                               -0.7985
   --------------------------------------------------------------------------
   slack (MET)                                                      0.0000
 
