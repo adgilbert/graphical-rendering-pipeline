@@ -170,7 +170,7 @@ module `mname()`
    //;                            InWidth=>$hash_in_width,
    //;                            OutWidth=>$hash_out_width );
    `$xjit_hash1 -> instantiate()` (
-	      .in_RnnH( { sample1_R14S[1][`$sig_fig`-1:4] , sample2_R14S[0][`$sig_fig`-1:4]}   ),
+	      .in_RnnH( { sample1_R14S[1][`$sig_fig`-1:4] , sample1_R14S[0][`$sig_fig`-1:4]}   ),
 	      .mask_RnnH( hash_mask_R14H ),
 	      .out_RnnH( jitt_val1_R14H[0] )
 	      );
